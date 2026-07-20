@@ -31,4 +31,4 @@ Sube **toda** la carpeta `bootcamp-web/` (HTML + `assets/` + `downloads/`) a Git
 
 ## Seguridad
 
-El DOCX de Lab 2 traía un **PAT de GitHub** en URLs `git clone`. Fue **redactado** en `lab2.html`. Revoca ese token en GitHub IBM si sigue activo.
+No publiques URLs de `git clone` con tokens personales (`ghp_…`). Usa autenticación normal.
