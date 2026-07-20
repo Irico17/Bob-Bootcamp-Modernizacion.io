@@ -1,4 +1,4 @@
-# IBM Bob Bootcamp Web (Claro)
+# IBM Bob Bootcamp Web
 
 Sitio estático con **navegación por páginas** (estilo del lab Bitbucket, pero **sin Vite/React**):
 
