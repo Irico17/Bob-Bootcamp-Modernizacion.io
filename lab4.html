@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lab 4 · Contenerización · IBM Bob Bootcamp</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidenav">
+      <div class="brand">IBM Bob · Claro</div>
+      <a href="index.html">Inicio</a>
+      <a href="lab1.html">Lab 1 · Documentación</a>
+      <a href="lab2.html">Lab 2 · Migración</a>
+      <a href="lab3.html">Lab 3 · Unit Testing</a>
+      <a class="active" href="lab4.html">Lab 4 · Contenerización</a>
+      <a href="index.html#descargas">Descargas</a>
+    </aside>
+    <main class="wrap lab-content">
+      <div class="eyebrow">LABORATORIO 4 · 15–20 min</div>
+      <h1>Contenerización con Bob (Kubernetes / OpenShift)</h1>
+      <div class="meta">
+        <span class="pill">Dockerfile</span>
+        <span class="pill teal">K8s / OpenShift</span>
+        <span class="pill">Podman</span>
+      </div>
+      <p class="lede">
+        Demuestra cómo <strong>Bob</strong> ayuda a contenerizar una app Java y generar artefactos de despliegue
+        (Dockerfile + manifiestos) con buenas prácticas. Opcional: levantar imagen local con Podman/Docker.
+      </p>
+      <div class="note">
+        A diferencia del Lab 3, el foco <strong>no</strong> son los tests, sino los artefactos de contenerización
+        y validar que la app se levanta bien. Usa el <strong>mismo proyecto</strong> del Lab 3.
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="downloads/lab3-4-java.zip" download>Descargar Labs 3 &amp; 4 (ZIP)</a>
+        <a class="btn btn-secondary" href="lab3.html">Ir al Lab 3</a>
+      </div>
+
+      <div class="card">
+        <h2>1. Objetivo del laboratorio</h2>
+        <ol>
+          <li>Usar Bob para generar:
+            <ul>
+              <li><code>Dockerfile</code> multi-stage (slim, no-root)</li>
+              <li><code>.dockerignore</code></li>
+              <li>Manifiestos Kubernetes (<code>Deployment</code>, <code>Service</code>) y OpenShift (<code>Route</code>)</li>
+              <li>Readiness / liveness probes a <code>/health</code></li>
+            </ul>
+          </li>
+          <li>Revisar buenas prácticas (multi-stage, no-root, UID OpenShift, límites, probes).</li>
+          <li><em>(Opcional)</em> Build + run local y verificar <code>GET /health</code> + un endpoint de negocio.</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h2>2. Por qué esta app sí se puede “levantar”</h2>
+        <p>
+          Se añadió una capa HTTP mínima (<code>com.claro.lab.api.App</code>) con el servidor embebido del JDK,
+          <strong>sin dependencias nuevas</strong>: puerto 8080 (<code>PORT</code>), <code>/health</code> y endpoints de negocio.
+        </p>
+        <table>
+          <thead><tr><th>Ruta</th><th>Qué hace</th><th>Ejemplo</th></tr></thead>
+          <tbody>
+            <tr><td><code>GET /health</code></td><td>Estado (probes)</td><td><code>{"status":"UP"}</code></td></tr>
+            <tr><td><code>GET /fare</code></td><td>Tarifa</td><td><code>/fare?plan=CORPORATE&amp;minutes=150&amp;data=800&amp;peak=true</code></td></tr>
+            <tr><td><code>GET /discount</code></td><td>Descuento</td><td><code>/discount?customerId=C2&amp;amount=200</code></td></tr>
+            <tr><td><code>GET /</code></td><td>Info</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div class="note">Clientes demo: C1=SILVER, C2=GOLD, C3=PLATINUM (vía <code>InMemoryLoyaltyTierLookup</code>).</div>
+
+        <h3>Sanity check sin contenedor</h3>
+        <div class="prewrap"><pre>mvn -q -DskipTests package
+java -jar target/app.jar
+# otra terminal:
+curl http://localhost:8080/health
+curl "http://localhost:8080/fare?plan=CORPORATE&minutes=150&data=800&peak=true"
+curl "http://localhost:8080/discount?customerId=C2&amount=200"</pre></div>
+      </div>
+
+      <div class="card">
+        <h2>3. Prerrequisitos</h2>
+        <table>
+          <thead><tr><th>Requisito</th><th>Notas</th></tr></thead>
+          <tbody>
+            <tr><td>Bob</td><td>Acceso al proyecto</td></tr>
+            <tr><td>JDK 17 + Maven 3.8+</td><td>Compilar <code>app.jar</code></td></tr>
+            <tr><td>Podman (preferible) o Docker</td><td>Imagen local</td></tr>
+            <tr><td>kubectl / oc (opcional)</td><td>Solo si hay cluster</td></tr>
+          </tbody>
+        </table>
+        <div class="note">No hace falta cluster para el objetivo principal. Podman puede hacer <code>kube play</code> (§7).</div>
+      </div>
+
+      <div class="card">
+        <h2>4. Cómo invocar a Bob</h2>
+        <ol>
+          <li>Analizar el proyecto (JAR, puerto, health).</li>
+          <li>Generar artefactos (Dockerfile, .dockerignore, manifiestos).</li>
+          <li>Revisar buenas prácticas (§6).</li>
+          <li>(Opcional) Pedir comandos Podman/Docker.</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h2>5. Prompts guía para Bob</h2>
+
+        <h3>Prompt 1 — Análisis</h3>
+        <div class="prewrap"><pre>Analiza este proyecto Maven (Java 17). Identifica:
+- clase main y cómo se ejecuta (JAR ejecutable)
+- puerto que expone y variable de entorno de configuración
+- endpoint de health para probes
+Resume cómo lo contenerizarías para Kubernetes/OpenShift.</pre></div>
+
+        <h3>Prompt 2 — Dockerfile</h3>
+        <div class="prewrap"><pre>Genera un Dockerfile multi-stage para esta app Java 17:
+- Stage de build: compila con Maven y produce el JAR ejecutable (target/app.jar).
+- Stage de runtime: imagen base slim con solo JRE.
+- Ejecuta como usuario NO root y compatible con el UID aleatorio de OpenShift
+  (permisos de grupo 0, sin USER numérico fijo problemático).
+- EXPOSE 8080, entrypoint "java -jar app.jar", respeta la variable PORT.
+- Añade también un .dockerignore adecuado.
+Explica brevemente cada decisión.</pre></div>
+
+        <h3>Prompt 3 — Manifiestos Kubernetes / OpenShift</h3>
+        <div class="prewrap"><pre>Genera manifiestos para desplegar esta imagen:
+- Deployment (1 réplica) con readiness y liveness probes a GET /health en el puerto 8080.
+- Service (ClusterIP) que exponga el puerto.
+- securityContext con buenas prácticas: runAsNonRoot, allowPrivilegeEscalation: false,
+  capabilities drop ALL, seccompProfile RuntimeDefault.
+- resources: requests y limits de CPU y memoria razonables.
+- Variante para OpenShift: un Route que exponga el Service.
+Usa labels consistentes (app=claro-lab-api).</pre></div>
+
+        <h3>Prompt 4 (opcional) — Prueba local</h3>
+        <div class="prewrap"><pre>Dame los comandos para construir la imagen y levantarla localmente con Podman
+(y el equivalente con Docker), incluyendo cómo verificar GET /health y detener/eliminar
+el contenedor al terminar.</pre></div>
+      </div>
+
+      <div class="card">
+        <h2>6. Buenas prácticas (checklist)</h2>
+        <ul class="check">
+          <li><strong>Multi-stage</strong>: imagen final sin Maven/JDK completo</li>
+          <li>Imagen base slim/oficial (Temurin JRE o UBI OpenJDK)</li>
+          <li>Usuario no-root + compatible OpenShift (UID arbitrario, puerto 8080)</li>
+          <li><code>EXPOSE 8080</code> y variable <code>PORT</code></li>
+          <li><code>.dockerignore</code> (target, .git, IDE…)</li>
+          <li>Probes readiness + liveness a <code>GET /health</code></li>
+          <li><code>securityContext</code>: runAsNonRoot, allowPrivilegeEscalation false, drop ALL, seccomp RuntimeDefault</li>
+          <li>Requests/limits de CPU y memoria</li>
+          <li>Sin secretos hardcodeados</li>
+          <li>Labels consistentes <code>app=claro-lab-api</code></li>
+          <li>(Opcional) build con <code>mvn verify</code> para exigir tests del Lab 3</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>7. Verificación local (opcional)</h2>
+        <h3>7.1 Podman (preferible)</h3>
+        <div class="prewrap"><pre>podman build -t claro-lab-api:1.0 .
+podman run -d --name claro-api -p 8080:8080 claro-lab-api:1.0
+curl http://localhost:8080/health
+curl "http://localhost:8080/fare?plan=CORPORATE&minutes=150&data=800&peak=true"
+podman logs claro-api
+podman ps
+podman stop claro-api && podman rm claro-api</pre></div>
+
+        <h3>7.2 Docker</h3>
+        <div class="prewrap"><pre>docker build -t claro-lab-api:1.0 .
+docker run -d --name claro-api -p 8080:8080 claro-lab-api:1.0
+curl http://localhost:8080/health
+docker stop claro-api && docker rm claro-api</pre></div>
+
+        <h3>7.3 Manifiestos con Podman</h3>
+        <div class="prewrap"><pre>podman kube play deployment.yaml
+podman pod ps
+curl http://localhost:8080/health
+podman kube down deployment.yaml</pre></div>
+        <div class="note warn">No uses <code>podman run</code> y <code>kube play</code> a la vez en el mismo puerto/nombre.</div>
+
+        <h3>7.4 Cluster (opcional)</h3>
+        <div class="prewrap"><pre>kubectl apply -f deployment.yaml -f service.yaml
+kubectl get pods -w
+kubectl port-forward svc/claro-lab-api 8080:80
+curl http://localhost:8080/health</pre></div>
+      </div>
+
+      <div class="card">
+        <h2>8. Extra — tests dentro del contenedor</h2>
+        <div class="prewrap"><pre>Modifica el Dockerfile para que el stage de build ejecute "mvn verify" (no solo package),
+de modo que la imagen solo se genere si todos los unit tests pasan.</pre></div>
+      </div>
+
+      <div class="card">
+        <h2>9. Criterios de éxito</h2>
+        <ul>
+          <li>Bob generó Dockerfile, .dockerignore y manifiestos K8s/OpenShift</li>
+          <li>Checklist de buenas prácticas (§6) mayormente cumplido</li>
+          <li>(Si hubo tiempo) imagen local y <code>/health</code> → <code>{"status":"UP"}</code></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>10. Estructura relevante</h2>
+        <div class="prewrap"><pre>pom.xml  → target/app.jar
+src/main/java/com/claro/lab/
+  api/App.java
+  discount/InMemoryLoyaltyTierLookup.java
+  pricing/… discount/… reservation/…
+# Bob generará: Dockerfile, .dockerignore, deployment/service/route.yaml</pre></div>
+      </div>
+    </main>
+  </div>
+  <script src="site.js"></script>
+</body>
+</html>

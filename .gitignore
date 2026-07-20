@@ -1,0 +1,28 @@
+# Scripts de generación / mantenimiento
+*.py
+_*
+
+# Extractos del DOCX (Word) — las imágenes publicadas viven en assets/lab2/
+_docx/
+*.docx
+*.doc
+
+# Staging temporal
+_staging/
+_lab1src/
+_lab1pack/
+_zipstage/
+_zipeek/
+_chk/
+
+# Sistema / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+
+# Dependencias / build (por si se añaden después)
+node_modules/
+dist/
+.cache/

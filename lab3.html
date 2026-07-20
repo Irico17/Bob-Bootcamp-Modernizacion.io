@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lab 3 · Unit Testing · IBM Bob Bootcamp</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true, theme: "dark" });
+  </script>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidenav">
+      <div class="brand">IBM Bob · Claro</div>
+      <a href="index.html">Inicio</a>
+      <a href="lab1.html">Lab 1 · Documentación</a>
+      <a href="lab2.html">Lab 2 · Migración</a>
+      <a class="active" href="lab3.html">Lab 3 · Unit Testing</a>
+      <a href="lab4.html">Lab 4 · Contenerización</a>
+      <a href="index.html#descargas">Descargas</a>
+    </aside>
+    <main class="wrap lab-content">
+      <div class="eyebrow">LABORATORIO 3 · 15–30 min</div>
+      <h1>Bob Premium — Java Unit Testing</h1>
+      <div class="meta">
+        <span class="pill">Bob Premium</span>
+        <span class="pill teal">JaCoCo · JUnit 5 · Mockito</span>
+      </div>
+      <p class="lede">
+        Laboratorio para demostrar <strong>Bob Premium Java Unit Testing</strong> sobre un dominio de precios,
+        lealtad y reservas en tienda (estilo Claro / telecom). El código de producción está listo;
+        <strong>los tests, JaCoCo y el diagrama del proceso los genera Bob</strong> durante el demo.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href="downloads/lab3-4-java.zip" download>Descargar Labs 3 &amp; 4 (ZIP)</a>
+        <a class="btn btn-secondary" href="https://github.ibm.com/Cristhofer-Alegre/Laboratorio-Java-Unit-Test" target="_blank" rel="noreferrer">Repo GitHub IBM</a>
+      </div>
+
+      <div class="card">
+        <h2>1. Explicación de la aplicación</h2>
+        <p>
+          Aplicación demo Maven (Java 17) con lógica de negocio típica de un operador móvil: tarifas por plan,
+          descuentos por lealtad y disponibilidad de citas en tienda. Incluye una <strong>capa HTTP mínima</strong>
+          (servidor del JDK, sin frameworks) para poder contenerizar y levantar la app en el
+          <a href="lab4.html">Lab 4</a>. No hay UI ni base de datos: el valor del Lab 3 está en las
+          <strong>ramas, validaciones y dependencias inyectables</strong> que Bob debe cubrir con unit tests.
+        </p>
+        <table>
+          <thead><tr><th>Paquete / clase</th><th>Qué hace</th></tr></thead>
+          <tbody>
+            <tr><td><code>pricing.FareCalculator</code></td><td>Cargo por minutos/datos según plan, minutos/datos gratis, horario pico, redondeo.</td></tr>
+            <tr><td><code>discount.LoyaltyDiscount</code></td><td>Descuento por lealtad con tope. Depende de <code>LoyaltyTierLookup</code> → <strong>Mockito</strong>.</td></tr>
+            <tr><td><code>LoyaltyTier</code> / <code>LoyaltyTierLookup</code></td><td>Enum e interfaz inyectable del tier del cliente.</td></tr>
+            <tr><td><code>InMemoryLoyaltyTierLookup</code></td><td>Impl en memoria para <code>/discount</code> (Lab 4).</td></tr>
+            <tr><td><code>reservation.Reservation</code></td><td>Modelo de reserva (inicio, duración, solapes).</td></tr>
+            <tr><td><code>AvailabilityService</code></td><td>Disponibilidad de slots: horario comercial y solapes.</td></tr>
+            <tr><td><code>api.App</code></td><td>HTTP: <code>/health</code>, <code>/fare</code>, <code>/discount</code>.</td></tr>
+          </tbody>
+        </table>
+        <div class="note">
+          El foco pedagógico son las clases de <strong>negocio</strong>. Si eliges <strong>All classes</strong>,
+          Bob puede generar también tests para la capa HTTP (extras, no rompe el lab).
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>2. Objetivo del laboratorio</h2>
+        <p>Ejecutar el workflow <strong>Java Unit Testing</strong> de Bob Premium y comprobar que:</p>
+        <ol>
+          <li>Instala/configura <strong>JaCoCo</strong> si falta.</li>
+          <li>Genera una <strong>estrategia de unit tests</strong> (<code>UNITTEST.md</code>).</li>
+          <li>Crea y ejecuta tests (ciclo generate–run–fix) con subagentes.</li>
+          <li>Mide <strong>cobertura</strong> y produce un <strong>diagrama del proceso</strong> (Mermaid / PNG).</li>
+        </ol>
+        <p>Al final, el proyecto pasa de <strong>0 tests</strong> a una suite JUnit 5 (+ Mockito) con cobertura reportable.</p>
+      </div>
+
+      <div class="card">
+        <h2>3. Qué es Java Unit Testing (Bob Premium)</h2>
+        <p>No es “pídele al chat que escriba tests”. Es un workflow <strong>strategy-first</strong> del Premium Package for Java Modernization:</p>
+        <ul>
+          <li><strong>Task 0</strong> — subagente instala <strong>JaCoCo</strong> en el <code>pom.xml</code> si no está.</li>
+          <li><strong>Task 1</strong> — otro subagente analiza el proyecto y genera <code>UNITTEST.md</code>.</li>
+          <li><strong>Select Tasks</strong> — eliges qué sigue (generar tests, cobertura, git flow, etc.).</li>
+          <li>Subagentes <strong>generan, ejecutan y corrigen</strong> tests.</li>
+          <li>Bob produce un <strong>grafo del proceso</strong> (Mermaid / PNG).</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>4. Por qué es importante usarlo</h2>
+        <table>
+          <thead><tr><th>Chat “escribe tests”</th><th>Workflow Java Unit Testing</th></tr></thead>
+          <tbody>
+            <tr><td>Tests sueltos, sin plan</td><td>Estrategia documentada (<code>UNITTEST.md</code>)</td></tr>
+            <tr><td>Sin cobertura integrada</td><td>JaCoCo + reporte</td></tr>
+            <tr><td>Un solo shot</td><td>Subagentes, generate–run–fix</td></tr>
+            <tr><td>Difícil de repetir</td><td>Red de seguridad para modernización</td></tr>
+          </tbody>
+        </table>
+        <p>En modernización, los unit tests son el <strong>safety net</strong>: demuestras que el comportamiento no se rompió.</p>
+      </div>
+
+      <div class="card">
+        <h2>5. Prerrequisitos</h2>
+        <table>
+          <thead><tr><th>Requisito</th><th>Notas</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Bob ≥ 2.0</strong></td><td>IDE / agente con workflows</td></tr>
+            <tr><td><strong>Premium Package — Java Modernization</strong></td><td>Incluye Java Unit Testing</td></tr>
+            <tr><td><strong>JDK 17</strong></td><td>Compilación y tests</td></tr>
+            <tr><td><strong>Maven 3.8+</strong></td><td>Build del proyecto</td></tr>
+          </tbody>
+        </table>
+        <p>Docs oficiales:</p>
+        <ul>
+          <li><a href="https://github.com/IBM/ibm-bob-java" target="_blank" rel="noreferrer">IBM Bob Java (GitHub)</a></li>
+          <li><a href="https://www.ibm.com/products/ai-coding-agent/java-modernization" target="_blank" rel="noreferrer">Java Modernization — producto</a></li>
+          <li><a href="https://bob.ibm.com/docs/ide/premium-packages/java-modernization/getting-started" target="_blank" rel="noreferrer">Getting started</a></li>
+          <li><a href="https://bob.ibm.com/blog/pp_for_java_announcement/" target="_blank" rel="noreferrer">Anuncio Premium Package</a></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>6. Cómo clonar / abrir el proyecto</h2>
+        <div class="prewrap"><pre>git clone https://github.ibm.com/Cristhofer-Alegre/Laboratorio-Java-Unit-Test.git
+cd Laboratorio-Java-Unit-Test</pre></div>
+        <ol>
+          <li>Abre la carpeta del lab en Bob.</li>
+          <li>Confirma que ves <code>pom.xml</code> y <code>src/main/java/com/claro/lab/</code>.</li>
+          <li>En la raíz:</li>
+        </ol>
+        <div class="prewrap"><pre>mvn -q test-compile</pre></div>
+        <p>Debe terminar sin errores (<strong>aún no hay tests</strong> en el commit base).</p>
+      </div>
+
+      <div class="card">
+        <h2>7. Commit base / reset (re-ejecutar el lab)</h2>
+        <table>
+          <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Mensaje</strong></td><td><code>LaboratorioBasev1</code></td></tr>
+          </tbody>
+        </table>
+        <div class="prewrap"><pre>git status
+git log -1 --oneline
+
+git reset --hard :/LaboratorioBasev1
+git clean -fd   # solo si estás seguro</pre></div>
+        <div class="note warn">
+          No uses <code>LaboratorioBasev0</code> (<code>e37f884</code>): README viejo y sin capa HTTP / Lab 4.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>8. Baseline (antes de Bob)</h2>
+        <div class="prewrap"><pre>mvn test</pre></div>
+        <p>Resultado esperado: <strong>0 tests</strong>. En el <code>pom.xml</code> <strong>no hay JaCoCo</strong> todavía.</p>
+      </div>
+
+      <div class="card">
+        <h2>9. Cómo invocar el workflow</h2>
+        <h3>9.1 Arrancar</h3>
+        <ol>
+          <li><strong>UI:</strong> Start Workflow → Java Modernization → <strong>Java Unit Testing</strong></li>
+          <li><strong>Comando:</strong> <code>/start-java-mod</code></li>
+          <li><strong>Chat:</strong> <code>Java Unit Testing</code></li>
+        </ol>
+        <h3>9.2 Automático al inicio</h3>
+        <ol>
+          <li><strong>Task 0 — Install JaCoCo</strong></li>
+          <li><strong>Task 1 — Unit Test Strategy</strong> → <code>UNITTEST.md</code></li>
+        </ol>
+        <h3>9.3 Select Tasks (recomendado)</h3>
+        <table>
+          <thead><tr><th>Opción</th><th>Lab</th></tr></thead>
+          <tbody>
+            <tr><td>Re-generate Unit Test Strategy</td><td>OFF</td></tr>
+            <tr><td>Generate Unit Tests</td><td>ON</td></tr>
+            <tr><td>Candidate Selection Strategy</td><td>All classes</td></tr>
+            <tr><td>Run Code Coverage</td><td>ON</td></tr>
+            <tr><td>Enable Git Flow</td><td>OFF</td></tr>
+          </tbody>
+        </table>
+        <h3>9.4 Qué sigue</h3>
+        <ul>
+          <li>Generan tests por clase / grupo</li>
+          <li>Ejecutan y corrigen (generate → run → fix)</li>
+          <li>Cobertura JaCoCo</li>
+          <li>Diagrama Mermaid / PNG del proceso</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>10. Qué revisar y probar</h2>
+        <ul>
+          <li><code>UNITTEST.md</code> — estrategia, Mockito, grupos</li>
+          <li>Tests en <code>src/test/java/...</code></li>
+          <li>JaCoCo en <code>pom.xml</code></li>
+          <li>Reporte de cobertura + diagrama del proceso</li>
+          <li>Sanity: altera una regla y confirma que algún test falla</li>
+        </ul>
+        <div class="prewrap"><pre>mvn test</pre></div>
+      </div>
+
+      <div class="card">
+        <h2>11. Resultados esperados</h2>
+        <table>
+          <thead><tr><th>Artefacto</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td><code>UNITTEST.md</code></td><td>Estrategia</td></tr>
+            <tr><td><code>pom.xml</code></td><td>Plugin JaCoCo</td></tr>
+            <tr><td><code>src/test/java/...</code></td><td>Suites JUnit 5 (+ Mockito)</td></tr>
+            <tr><td>Cobertura</td><td>Reporte / métricas</td></tr>
+            <tr><td>Diagrama</td><td>Mermaid y/o PNG</td></tr>
+          </tbody>
+        </table>
+        <p>Los números exactos <strong>varían por corrida</strong>. Ejemplo de una corrida (~74 tests):</p>
+        <div class="mermaid-wrap">
+          <pre class="mermaid">
+flowchart TD
+    classDef untested fill:#2a0a18,stroke:#ee5396,stroke-width:2px
+    classDef tested fill:#081a1c,stroke:#009d9a,stroke-width:2px
+    classDef process fill:#001141,stroke:#4589ff,stroke-width:2px,text-align:left
+    start["Unit Testing Process"] --> jacoco["Task 0: Install JaCoCo"]:::process
+    jacoco --> strategy["Task 1: Generate Strategy / UNITTEST.md"]:::process
+    strategy --> untested1["LoyaltyDiscount"]:::untested
+    strategy --> untested2["FareCalculator"]:::untested
+    strategy --> untested3["Reservation"]:::untested
+    strategy --> untested4["AvailabilityService"]:::untested
+    untested1 --> test1["LoyaltyDiscount Tests + Mockito"]:::process
+    untested2 --> test2["FareCalculator Tests"]:::process
+    untested3 --> test3["Reservation Tests"]:::process
+    untested4 --> test4["AvailabilityService Tests"]:::process
+    test1 --> final["~74 tests passing"]:::tested
+    test2 --> final
+    test3 --> final
+    test4 --> final
+          </pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>12. Estructura del repo</h2>
+        <div class="prewrap"><pre>pom.xml                          # Java 17, JAR ejecutable, sin JaCoCo
+README.md / LAB4-CONTENERIZACION.md
+src/main/java/com/claro/lab/
+  api/App.java
+  pricing/FareCalculator.java
+  discount/...
+  reservation/...
+src/test/java/                   # vacío en LaboratorioBasev1</pre></div>
+        <p>Siguiente: <a href="lab4.html">Lab 4 — Contenerización</a>.</p>
+      </div>
+    </main>
+  </div>
+  <script src="site.js"></script>
+</body>
+</html>

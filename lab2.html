@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lab 2 · Migración de Plataforma · IBM Bob Bootcamp</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidenav">
+      <div class="brand">IBM Bob · Claro</div>
+      <a href="index.html">Inicio</a>
+      <a href="lab1.html">Lab 1 · Documentación</a>
+      <a class="active" href="lab2.html">Lab 2 · Migración</a>
+      <a href="lab3.html">Lab 3 · Unit Testing</a>
+      <a href="lab4.html">Lab 4 · Contenerización</a>
+      <a href="index.html#descargas">Descargas</a>
+    </aside>
+    <main class="wrap lab-content">
+      <div class="eyebrow">LABORATORIO 2 · 60 min</div>
+      <h1>BOB + AMA · Migración WebLogic → Liberty</h1>
+      <div class="meta">
+        <span class="pill">WebLogic → Liberty</span>
+        <span class="pill teal">Bob + AMA</span>
+        <span class="pill">JOSSO Gateway</span>
+      </div>
+      <div class="note warn">
+        <strong>Seguridad:</strong> el DOCX original incluía un token personal de GitHub en la URL de clone.
+        Aquí está <em>redactado</em>. Usa autenticación normal a <code>github.ibm.com</code> y
+        <strong>revoca ese token</strong> si sigue activo.
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="downloads/lab2-migracion.zip" download>Descargar guía Lab 2 (ZIP)</a>
+      </div>
+
+      <div class="card">
+        <h2>Descripción de la app</h2>
+        <p>
+          <strong>JOSSO Gateway</strong> es un servidor de Single Sign-On que permite a los usuarios autenticarse
+          una sola vez y acceder a múltiples aplicaciones sin volver a ingresar sus credenciales.
+          Incluye un panel de administración para monitorear en tiempo real el estado del servidor,
+          la salud de los componentes y las librerías cargadas. Está diseñado para correr en
+          <strong>WebLogic con Java 8</strong> y se gestiona desde línea de comandos con Podman y Make.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Objetivo del laboratorio</h2>
+        <p>
+          Migrar JOSSO Gateway de <strong>WebLogic 12.2.1.4</strong> a <strong>WAS Liberty</strong>
+          sin cambiar la lógica de negocio: adaptar configuración del servidor, contenedor y puntos
+          donde el código asume WebLogic.
+        </p>
+        <p>
+          El workflow de <strong>Java Modernization</strong> de Bob guía paso a paso el proceso de mover
+          una aplicación Java de un servidor legacy a Liberty.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Exploración de la app inicial</h2>
+        <div class="prewrap"><pre>git clone -b v4 https://github.ibm.com/claudia-rejas/JOSSO-weblogic-bob.git JOSSO-weblogic-bob-v4-FRESH</pre></div>
+        <table>
+          <thead><tr><th>URL</th><th>Acceso</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>http://localhost:7001/console</code></td>
+              <td>Admin Console WebLogic<br/>Usuario: <code>weblogic</code> / contraseña: <code>welcome1</code></td>
+            </tr>
+            <tr>
+              <td><code>http://localhost:7001/josso-gateway-web/signon/login.do</code></td>
+              <td>JOSSO Login<br/>Usuario: <code>bob</code> / contraseña: <code>bobpwd</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Preparación del entorno</h2>
+        <p>Pasos previos para configurar el entorno de demostración (TechZone / noVNC).</p>
+
+        <h3>Acceder al entorno de demostración</h3>
+        <ol>
+          <li>Cuando el entorno esté listo, haz clic en <strong>“Open this Environment”</strong> en el mosaico de reserva.</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image7.png" alt="Open this Environment" loading="lazy" /></figure>
+        <ol start="2">
+          <li>En la página de detalles, abre el enlace <strong>Published services → noVNC URL</strong>.</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image5.png" alt="noVNC URL" loading="lazy" /></figure>
+        <ol start="3">
+          <li>Haz clic en el botón <strong>Connect (A)</strong>.</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image1.png" alt="Connect" loading="lazy" /></figure>
+        <ol start="4">
+          <li>Ingresa la contraseña <code>IBMDem0s!</code> (A) y haz clic en <strong>Send Credentials (B)</strong>.</li>
+        </ol>
+        <div class="note">Eso es un <strong>cero numérico</strong> en <code>IBMDem0s!</code> (no la letra O).</div>
+        <figure class="shot"><img src="assets/lab2/image3.png" alt="Send Credentials" loading="lazy" /></figure>
+        <p>Una vez dentro verás el escritorio con navegadores, terminal, etc.</p>
+        <table>
+          <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td>ID de usuario VM</td><td><code>techzone</code></td></tr>
+            <tr><td>Contraseña VM</td><td><code>IBMDem0s!</code></td></tr>
+          </tbody>
+        </table>
+        <figure class="shot"><img src="assets/lab2/image8.png" alt="Escritorio demo" loading="lazy" /></figure>
+
+        <h3>Consejos noVNC</h3>
+        <p>Puedes ajustar el tamaño del área visible con <strong>noVNC Settings</strong>.</p>
+        <ol>
+          <li>Abre el twisty del panel de control noVNC (A).</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image9.png" alt="noVNC menu" loading="lazy" /></figure>
+        <ol start="2">
+          <li>Settings (A) → <strong>Remote Resizing</strong> en Scaling Mode (B).</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image2.png" alt="Remote Resizing" loading="lazy" /></figure>
+        <p>Para pegar texto de la guía en la VM: usa el <strong>Clipboard</strong> de noVNC.</p>
+        <ol>
+          <li>Copia el texto de esta guía.</li>
+          <li>Ícono Clipboard (A) → pega en el portapapeles noVNC (B).</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image4.png" alt="Clipboard noVNC" loading="lazy" /></figure>
+        <p>Luego pega en la terminal/navegador de la VM y cierra el clipboard.</p>
+
+        <h3>Iniciar el entorno de WebSphere</h3>
+        <p>Ejecuta el script que inicia deployment manager, nodos AppSrv01/AppSrv02 e IBM HTTP Server:</p>
+        <div class="prewrap"><pre>/home/techzone/demos/ManagedLiberty-MoRE/tx-more-lab/scripts/start-was-servers.sh</pre></div>
+
+        <div class="note warn">
+          <strong>Reiniciar el entorno (solo si es necesario):</strong>
+          <div class="prewrap" style="margin-top:.6rem"><pre>/home/techzone/demos/ManagedLiberty-MoRE/tx-more-lab/scripts/reset-lab-environment.sh</pre></div>
+        </div>
+
+        <h3>Consola de administración de WebSphere</h3>
+        <ol>
+          <li>Abre Chrome en la VM.</li>
+          <li>Ve a: <code>https://localhost:9043/ibm/console</code></li>
+          <li>Credenciales: ID <code>techzone</code> / Password <code>IBMDem0s!</code></li>
+        </ol>
+        <div class="note">Si aparece popup de autenticación del navegador, ingresa <code>IBMDem0s!</code> y Unlock.</div>
+        <figure class="shot"><img src="assets/lab2/image6.png" alt="Consola WebSphere" loading="lazy" /></figure>
+
+        <h3>Iniciar AMA</h3>
+        <div class="prewrap"><pre>cd /home/techzone/application-modernization-accelerator-local-4.6.0
+./launch.sh</pre></div>
+        <p>Selecciona la opción <strong>#5</strong> para INICIAR AMA.</p>
+        <p>URL en la VM:</p>
+        <div class="prewrap"><pre>https://rhel9-base.gym.lan:3001/</pre></div>
+        <p>Con esto termina la preparación del entorno.</p>
+      </div>
+
+      <div class="card">
+        <h2>Inicio del laboratorio</h2>
+
+        <h3>Clonar el proyecto</h3>
+        <p>Abre la Terminal y crea el directorio de trabajo:</p>
+        <div class="prewrap"><pre>mkdir -p ~/Student_3
+git clone -b v4 https://github.ibm.com/claudia-rejas/JOSSO-weblogic-bob.git ~/Student_3/JOSSO-weblogic-bob
+cd ~/Student_3/JOSSO-weblogic-bob
+git checkout v4</pre></div>
+        <figure class="shot"><img src="assets/lab2/image12.png" alt="Clone proyecto" loading="lazy" /></figure>
+
+        <h3>Iniciar AMA para el lab</h3>
+        <div class="prewrap"><pre>cd ~/application-modernization-accelerator-local-4.6.0/
+./launch.sh</pre></div>
+        <p>Al inicializar AMA deberías ver pantallas como estas; elige la opción <strong>5</strong> para iniciar:</p>
+        <figure class="shot"><img src="assets/lab2/image17.png" alt="AMA init" loading="lazy" /></figure>
+        <figure class="shot"><img src="assets/lab2/image18.png" alt="AMA menú opción 5" loading="lazy" /></figure>
+        <p>Mensaje esperado con la URL:</p>
+        <div class="prewrap"><pre>Application Modernization Accelerator 4.6.0 is available for use at the following URL>
+https://rhel9-base.gym.lan:3001</pre></div>
+        <figure class="shot"><img src="assets/lab2/image13.png" alt="AMA URL disponible" loading="lazy" /></figure>
+        <figure class="shot"><img src="assets/lab2/image10.png" alt="AMA UI" loading="lazy" /></figure>
+
+        <h3>Workspace y Discovery Tool</h3>
+        <ol>
+          <li>Crea un workspace con el nombre: <code>josso_weblogics</code></li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image21.png" alt="Crear workspace" loading="lazy" /></figure>
+        <ol start="2">
+          <li><strong>Create/Open discovery tool</strong></li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image19.png" alt="Discovery tool" loading="lazy" /></figure>
+        <ol start="3">
+          <li>Elige sistema operativo <strong>Linux</strong> → <strong>Download discovery tool</strong></li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image15.png" alt="Download discovery tool" loading="lazy" /></figure>
+
+        <p>En la terminal:</p>
+        <div class="prewrap"><pre>mkdir -p ~/Student_3/ama_discovery
+cd ~/Student_3/ama_discovery
+tar -zxvf ~/Downloads/DiscoveryTool-Linux_josso_weblogics.tgz
+
+cd ~/Student_3/ama_discovery/ama-discovery-4.6.0
+./bin/ama-discovery --web-logic-apps-location \
+~/Student_3/JOSSO-weblogic-bob/ama-artifacts/</pre></div>
+        <p>Acepta la licencia con <strong>1</strong> y elige Java <strong>1.8</strong> con la opción <strong>4</strong>.</p>
+        <figure class="shot"><img src="assets/lab2/image16.png" alt="Discovery running" loading="lazy" /></figure>
+
+        <h3>Replatform a Liberty</h3>
+        <p>Vuelve a AMA: <code>https://rhel9-base.gym.lan:3001</code> → opciones de replatform → elige <strong>Liberty</strong>.</p>
+        <figure class="shot"><img src="assets/lab2/image11.png" alt="Replatform Liberty" loading="lazy" /></figure>
+        <p>Discovery State / componente identificado:</p>
+        <div class="prewrap"><pre>josso-gateway-web-1.8.12-SNAPSHOT.war</pre></div>
+        <figure class="shot"><img src="assets/lab2/image23.png" alt="Discovery State" loading="lazy" /></figure>
+        <p>En assessment:</p>
+        <figure class="shot"><img src="assets/lab2/image20.png" alt="Assessment" loading="lazy" /></figure>
+        <p>En el componente WAR revisa: complejidad, destino Liberty, origen WebLogic, esfuerzo estimado. Luego <strong>Detalles</strong>:</p>
+        <figure class="shot"><img src="assets/lab2/image22.png" alt="Detalles migración" loading="lazy" /></figure>
+        <p><strong>View migration plan</strong> → descargar:</p>
+        <figure class="shot"><img src="assets/lab2/image25.png" alt="View migration plan" loading="lazy" /></figure>
+        <figure class="shot"><img src="assets/lab2/image26.png" alt="Abrir plan en Bob" loading="lazy" /></figure>
+        <p>Referencia: <a href="https://heidloff.net/article/bob-java-application-modernization/" target="_blank" rel="noreferrer">heidloff.net — Bob Java application modernization</a></p>
+      </div>
+
+      <div class="card">
+        <h2>Workflow Bob · Liberty Replatforming</h2>
+        <p>En Bob: <strong>Java Modernization</strong> → <strong>Liberty Replatforming</strong>.</p>
+        <figure class="shot"><img src="assets/lab2/image27.png" alt="Liberty Replatforming en Bob" loading="lazy" /></figure>
+        <p>
+          En Path a AMA usa tu <code>war_migrationPath.zip</code>: entra a la carpeta descargada,
+          selecciona todos los archivos, genera un ZIP y súbelo al workflow.
+        </p>
+        <figure class="shot"><img src="assets/lab2/image24.png" alt="ZIP migration path" loading="lazy" /></figure>
+        <p>A partir de aquí autoriza los pasos con Accept mientras Bob continúa.</p>
+        <p>
+          Al final Bob reporta coins, archivos modificados, diagrama del replatform,
+          cambios exitosos y pendientes.
+        </p>
+        <figure class="shot"><img src="assets/lab2/image14.png" alt="Resumen workflow Bob" loading="lazy" /></figure>
+      </div>
+
+      <div class="card">
+        <h2>Prompts post-migración (Liberty end-to-end)</h2>
+        <p>
+          Cuando el workflow termine, la migración debería verse en Podman. Para el panel admin
+          de Liberty (como en WebLogic), usa estos prompts:
+        </p>
+
+        <h3>Primer prompt</h3>
+        <div class="prewrap"><pre>Bob, dame las urls activas y funcionales de la aplicación</pre></div>
+
+        <h3>Segundo prompt</h3>
+        <div class="prewrap"><pre>Configura el despliegue de JOSSO Gateway en Liberty para que funcione correctamente end-to-end. Aplica todos estos cambios de una sola vez:
+
+1. gateway/src/main/liberty/config/server.xml
+Features: servlet-3.1, jsp-2.3, mpMetrics-1.1, adminCenter-1.0, localConnector-1.0
+Los puertos NO deben ser números fijos — deben ser variables de Liberty: httpPort="${liberty.http.port}" y httpsPort="${liberty.https.port}"
+El elemento &lt;application&gt; debe tener: location="josso-gateway-web-1.8.12-SNAPSHOT.war", context-root="/josso-gateway-web", id="josso-gateway-web", name="josso-gateway-web"
+Las credenciales deben usar ${liberty.admin.user} y ${liberty.admin.password} en &lt;quickStartSecurity&gt; (NO usar ${env.*}, no funciona en quickStartSecurity)
+
+2. Containerfile (raíz del proyecto)
+Las rutas de copia deben ser relativas a la raíz del proyecto: ./gateway/src/main/liberty/config/* y ./gateway/web/target/*.*ar y ./gateway/src/main/liberty/lib
+
+3. Makefile — variables y target liberty-setup
+Los puertos deben definirse con ?= para poder sobreescribirse: LIBERTY_HTTP ?= 9086 y LIBERTY_HTTPS ?= 9449
+Antes del podman run, generar $(HOME)/josso-bootstrap.properties con printf que incluya las 4 propiedades: liberty.admin.user=admin, liberty.admin.password=admin, liberty.http.port=$(LIBERTY_HTTP), liberty.https.port=$(LIBERTY_HTTPS)
+El podman run debe montar ese archivo: -v $(HOME)/josso-bootstrap.properties:/config/bootstrap.properties:ro
+No usar -e LIBERTY_ADMIN_USER ni -e LIBERTY_ADMIN_PASSWORD
+
+4. gateway/web/src/main/webapp/admin/libraries.jsp
+Reemplazar el bloque de detección del servidor (variables serverInfo, isWebLogic, isLiberty, adminUrl, etc.) por &lt;%@ include file="/WEB-INF/jsp/_server-detect.jsp" %&gt; seguido de String adminLabel = isWebLogic ? "WLS Console" : (isLiberty ? "Liberty Admin" : null);
+Buscar y eliminar cualquier línea String ctx = request.getContextPath(); que quede en el mismo archivo después del include — ya viene declarada dentro del include y causaría error de compilación JSP Duplicate local variable ctx
+
+Una vez aplicados todos los cambios, ejecuta make liberty-setup y confirma que:
+Liberty arranca con CWWKZ0001I: Application josso-gateway-web started
+No hay errores de autenticación CWWKS1100A
+curl -o /dev/null -w "%{http_code}" http://localhost:$(LIBERTY_HTTP)/josso-gateway-web/admin/libraries.jsp devuelve 200
+
+Al terminar, muéstrame las URLs y credenciales de acceso:
+Admin Center Liberty (usuario y contraseña)
+JOSSO Login
+JOSSO Status</pre></div>
+        <div class="note">
+          Con esto tendrás el panel funcional. Si además quieres el botón Admin desde la app, continúa con los prompts 3 y 4.
+        </div>
+
+        <h3>Tercer prompt</h3>
+        <div class="prewrap"><pre>Revisa los JARs marcados como CRIT o WARN en el Library Stack de health.jsp y elimina los que ya no sean necesarios en Liberty, sin romper la funcionalidad de la aplicación. Justifica cada eliminación y confirma que Liberty sigue arrancando correctamente después de la limpieza.</pre></div>
+
+        <h3>Cuarto prompt</h3>
+        <div class="prewrap"><pre>Ahora haz que el botón Liberty Admin de la barra de navegación use la adminUrl que ya resuelve ServerDetectListener, para que abra el Admin Center de Liberty correctamente desde la aplicación.</pre></div>
+
+        <p><strong>Resultado:</strong> aplicación desplegada en Liberty, funcional como en WebLogic.</p>
+      </div>
+    </main>
+  </div>
+  <script src="site.js"></script>
+</body>
+</html>

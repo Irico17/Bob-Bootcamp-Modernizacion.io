@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lab 1 · Documentación · IBM Bob Bootcamp</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidenav">
+      <div class="brand">IBM Bob · Claro</div>
+      <a href="index.html">Inicio</a>
+      <a class="active" href="lab1.html">Lab 1 · Documentación</a>
+      <a href="lab2.html">Lab 2 · Migración</a>
+      <a href="lab3.html">Lab 3 · Unit Testing</a>
+      <a href="lab4.html">Lab 4 · Contenerización</a>
+      <a href="index.html#descargas">Descargas</a>
+    </aside>
+    <main class="wrap lab-content">
+      <div class="eyebrow">LABORATORIO 1 · ~30 min</div>
+      <h1>Sistema de Gestión de Empleados</h1>
+      <div class="meta">
+        <span class="pill">Documentación automática</span>
+        <span class="pill teal">Modernización Java</span>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="downloads/lab1-documentacion.zip" download>Descargar proyecto Lab 1</a>
+      </div>
+
+      <div class="card">
+        <h2>Alcance del Hands-On</h2>
+        <p>Este lab se centra en el uso de <strong>Bob</strong> para acelerar la comprensión, documentación y modernización de una aplicación Java existente.</p>
+
+        <h3>Documentación automatizada</h3>
+        <p>Uso de agentes para analizar el proyecto existente y generar documentación técnica.</p>
+        <p><strong>Beneficios clave:</strong></p>
+        <ul>
+          <li>Comprensión rápida de proyectos existentes</li>
+          <li>Generación consistente de documentación</li>
+          <li>Reducción del esfuerzo manual de documentación</li>
+        </ul>
+
+        <h3>Modernización Java</h3>
+        <p>Uso del paquete de modernización Java de Bob para actualizar la versión del lenguaje y migrar dependencias obsoletas.</p>
+        <p><strong>Beneficios clave:</strong></p>
+        <ul>
+          <li>Detección automática de versiones desactualizadas</li>
+          <li>Aplicación de recetas de migración probadas</li>
+          <li>Reducción del riesgo de regresiones</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Flujo del laboratorio</h2>
+
+        <h3>1. Analizar la solución existente y generar documentación técnica</h3>
+        <p>El participante abrirá el proyecto en Bob y le solicitará una explicación inicial de la arquitectura y los componentes disponibles, seguida de la generación de documentación técnica formal.</p>
+        <p><strong>Objetivo:</strong> comprender qué componentes existen y producir documentación clara antes de modernizar el código.</p>
+        <p><strong>Prompt ejemplo:</strong></p>
+        <div class="prewrap"><pre>Analiza este proyecto Java y genera documentación técnica completa en español.
+
+La documentación debe incluir:
+- descripción general de la solución y su propósito
+- stack tecnológico utilizado (versiones exactas del pom.xml)
+- estructura del repositorio y responsabilidad de cada capa
+- modelos de datos (entidades JPA y sus relaciones)
+- endpoints REST disponibles con métodos, URLs y descripción
+- configuración requerida en application.properties
+- supuestos y restricciones de la aplicación
+- pasos para ejecutar la solución localmente
+- posibles mejoras o extensiones del sistema</pre></div>
+
+        <h3>2. Modernizar la aplicación usando el paquete Java de Bob</h3>
+        <p>Una vez comprendida y documentada la solución, el participante le pedirá a Bob que aplique las recetas de modernización Java disponibles para actualizar la versión del lenguaje y las dependencias obsoletas.</p>
+        <p><strong>Objetivo:</strong> llevar la aplicación a una versión moderna de Java y Spring Boot, eliminando dependencias desactualizadas y aplicando las mejores prácticas actuales.</p>
+        <p><strong>Prompt ejemplo:</strong></p>
+        <div class="prewrap"><pre>Moderniza esta aplicación Java usando el paquete de modernización de Java de Bob.
+
+Por favor:
+- detecta la versión actual de Java y Spring Boot en uso
+- identifica dependencias desactualizadas o con vulnerabilidades conocidas
+- aplica las recetas de migración disponibles para actualizar a una versión moderna de Java
+- actualiza Spring Boot a la versión estable más reciente compatible
+- reporta los cambios aplicados y cualquier ajuste manual necesario
+- verifica que el proyecto compile y los tests pasen tras la modernización</pre></div>
+
+        <h3>3. Ejecutar y validar la aplicación modernizada</h3>
+        <p>Después de completar la modernización, el participante ejecutará la aplicación desde la carpeta raíz del proyecto para verificar que inicia correctamente y que no existen errores de compilación o configuración.</p>
+        <p><strong>Objetivo:</strong> comprobar de forma práctica que la aplicación modernizada puede ejecutarse correctamente en un entorno local.</p>
+        <p><strong>macOS o Linux:</strong></p>
+        <div class="prewrap"><pre>./mvnw spring-boot:run</pre></div>
+        <p><strong>Windows:</strong></p>
+        <div class="prewrap"><pre>mvnw.cmd spring-boot:run</pre></div>
+        <div class="note">Si el ZIP no incluye Maven Wrapper, usa <code>mvn spring-boot:run</code>.</div>
+        <p>Una vez iniciada la aplicación, revisa la consola para confirmar que Spring Boot se levantó correctamente y accede a los endpoints disponibles para validar su funcionamiento.</p>
+      </div>
+
+      <div class="card">
+        <h2>Resultado esperado</h2>
+        <ul>
+          <li>Documentación técnica completa generada automáticamente por Bob</li>
+          <li>La aplicación migrada a una versión moderna de Java y Spring Boot con dependencias actualizadas</li>
+          <li>Una comprensión práctica del flujo de análisis, documentación y modernización asistido por agentes</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+  <script src="site.js"></script>
+</body>
+</html>

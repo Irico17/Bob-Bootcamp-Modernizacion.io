@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IBM Bob Bootcamp </title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidenav">
+      <div class="brand">IBM Bob · Bootcamp</div>
+      <a class="active" href="index.html">Inicio</a>
+      <a href="lab1.html">Lab 1 · Documentación</a>
+      <a href="lab2.html">Lab 2 · Migración</a>
+      <a href="lab3.html">Lab 3 · Unit Testing</a>
+      <a href="lab4.html">Lab 4 · Contenerización</a>
+      <a href="#descargas">Descargas</a>
+    </aside>
+    <main class="wrap">
+      <div class="eyebrow">IBM Bob · Bootcamp Claro</div>
+      <h1>Guía completa de laboratorios</h1>
+      <p class="lede">
+        Cuatro labs prácticos: documentación, migración WebLogic→Liberty (Bob + AMA),
+        pruebas unitarias Premium y contenerización.
+      </p>
+      <div class="badges">
+        <span class="badge">Lab 1 · 30 min</span>
+        <span class="badge">Lab 2 · 60 min</span>
+        <span class="badge">Lab 3 · 30 min</span>
+        <span class="badge">Lab 4 · 15 min</span>
+      </div>
+
+      <section class="card" id="agenda">
+        <h2>Agenda</h2>
+        <ul class="timeline">
+          <li>
+            <div class="t">30 min</div>
+            <div class="title"><a href="lab1.html">Lab 1: Documentación de Código</a></div>
+            <div class="desc">Documentación técnica automática y modernización Java.</div>
+          </li>
+          <li>
+            <div class="t">10 min</div>
+            <div class="title">Break</div>
+          </li>
+          <li>
+            <div class="t">60 min</div>
+            <div class="title"><a href="lab2.html">Lab 2: Migración de Plataforma</a></div>
+            <div class="desc">JOSSO Gateway: WebLogic → Liberty con AMA + Bob.</div>
+          </li>
+          <li>
+            <div class="t">30 min</div>
+            <div class="title"><a href="lab3.html">Lab 3: Pruebas Unitarias</a></div>
+            <div class="desc">Workflow Premium Java Unit Testing (estrategia, JaCoCo, Mockito).</div>
+          </li>
+          <li>
+            <div class="t">10 min</div>
+            <div class="title">Break</div>
+          </li>
+          <li>
+            <div class="t">15 min</div>
+            <div class="title"><a href="lab4.html">Lab 4: Contenerización</a></div>
+            <div class="desc">Dockerfile + manifiestos K8s/OpenShift con el mismo proyecto del Lab 3.</div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="card" id="requisitos">
+        <h2>Requisitos</h2>
+        <ul>
+          <li><a href="https://bob.ibm.com/download" target="_blank" rel="noreferrer">IBM Bob ≥ 2.0</a></li>
+          <li>Premium Package for Java Modernization (Labs 2–4 según workflow)</li>
+          <li>JDK 17 + Maven (Labs 3–4); entorno TechZone/AMA (Lab 2)</li>
+          <li>Podman o Docker (Lab 4)</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://bob.ibm.com/download" target="_blank" rel="noreferrer">Descargar IBM Bob</a>
+        </div>
+      </section>
+
+      <section class="card" id="descargas">
+        <h2>Descargas de proyectos</h2>
+        <p>
+          Patrón igual que el lab anterior: sitio estático + <code>downloads/*.zip</code>.
+          Aquí hay <strong>páginas HTML con navegación lateral</strong> (sin Vite), listo para GitHub Pages u Object Storage.
+        </p>
+        <table>
+          <thead>
+            <tr><th>Lab</th><th>Archivo</th><th>Notas</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lab 1</td>
+              <td><a href="downloads/lab1-documentacion.zip" download>lab1-documentacion.zip</a></td>
+              <td>Proyecto <strong>employee-management</strong> + README actualizado</td>
+            </tr>
+            <tr>
+              <td>Lab 2</td>
+              <td><a href="downloads/lab2-migracion.zip" download>lab2-migracion.zip</a></td>
+              <td>Guía HTML + capturas extraídas del DOCX (el código se clona del repo IBM)</td>
+            </tr>
+            <tr>
+              <td>Labs 3 y 4</td>
+              <td><a href="downloads/lab3-4-java.zip" download>lab3-4-java.zip</a></td>
+              <td><strong>Un solo ZIP</strong> — mismo baseline para unit testing y contenerización</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="note">
+          Labs 3 y 4 comparten proyecto a propósito: primero tests, luego contenerizar.
+          Por eso van en <strong>un único ZIP</strong> (no dos).
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
