@@ -55,6 +55,46 @@
       <div class="card">
         <h2>Flujo del laboratorio</h2>
 
+        <h3>0. Instalar dependencias necesarias</h3>
+        <p>
+          Instala las siguientes herramientas <strong>una sola vez</strong> antes de comenzar.
+          Las versiones indicadas son las que se usarán tras la modernización (pasos 2 y 3);
+          el paso 1 es solo análisis y documentación, por lo que <strong>no requiere compilar ni ejecutar</strong> la aplicación.
+        </p>
+
+        <h4>Java 17 (JDK)</h4>
+        <p><strong>macOS:</strong></p>
+        <div class="prewrap"><pre>brew install --cask temurin@17</pre></div>
+        <p><strong>Windows:</strong></p>
+        <div class="prewrap"><pre>winget install EclipseAdoptium.Temurin.17.JDK</pre></div>
+        <p><strong>Linux:</strong></p>
+        <div class="prewrap"><pre>sudo apt install openjdk-17-jdk</pre></div>
+        <p>Verificar: <code>java -version  # debe mostrar 17.x</code></p>
+        <div class="note">
+          Asegúrate de que <code>JAVA_HOME</code> apunte al JDK 17.<br/>
+          macOS/Linux: <code>export JAVA_HOME=$(/usr/libexec/java_home -v 17)</code><br/>
+          Windows: configurar en <em>Variables de entorno del sistema</em>.
+        </div>
+
+        <h4>Apache Maven 3.8+</h4>
+        <p><strong>macOS:</strong></p>
+        <div class="prewrap"><pre>brew install maven</pre></div>
+        <p><strong>Windows:</strong></p>
+        <div class="prewrap"><pre>winget install Apache.Maven</pre></div>
+        <p><strong>Linux:</strong></p>
+        <div class="prewrap"><pre>sudo apt install maven</pre></div>
+        <p>Verificar: <code>mvn -version  # debe mostrar 3.8.x o superior</code></p>
+
+        <h4>MySQL 8.x</h4>
+        <p><strong>macOS:</strong></p>
+        <div class="prewrap"><pre>brew install mysql
+brew services start mysql</pre></div>
+        <p><strong>Windows:</strong> descargar el instalador desde <a href="https://dev.mysql.com/downloads/installer/" target="_blank" rel="noreferrer">dev.mysql.com/downloads/installer</a></p>
+        <p><strong>Linux:</strong></p>
+        <div class="prewrap"><pre>sudo apt install mysql-server
+sudo systemctl start mysql</pre></div>
+        <p>Verificar: <code>mysql --version  # debe mostrar 8.x</code></p>
+
         <h3>1. Analizar la solución existente y generar documentación técnica</h3>
         <p>El participante abrirá el proyecto en Bob y le solicitará una explicación inicial de la arquitectura y los componentes disponibles, seguida de la generación de documentación técnica formal.</p>
         <p><strong>Objetivo:</strong> comprender qué componentes existen y producir documentación clara antes de modernizar el código.</p>
