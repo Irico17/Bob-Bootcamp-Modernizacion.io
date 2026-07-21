@@ -75,143 +75,14 @@
       </div>
 
       <div class="card">
-        <h2>Preparación del entorno</h2>
-        <p>Pasos previos para configurar el entorno de demostración (noVNC / VM del lab, si aplica).</p>
-
-        <h3>Acceder al entorno de demostración</h3>
-        <ol>
-          <li>Cuando el entorno esté listo, haz clic en <strong>“Open this Environment”</strong> en el mosaico de reserva.</li>
-        </ol>
-        <figure class="shot"><img src="assets/lab2/image7.png" alt="Open this Environment" loading="lazy" /></figure>
-        <ol start="2">
-          <li>En la página de detalles, abre el enlace <strong>Published services → noVNC URL</strong>.</li>
-        </ol>
-        <figure class="shot"><img src="assets/lab2/image5.png" alt="noVNC URL" loading="lazy" /></figure>
-        <ol start="3">
-          <li>Haz clic en el botón <strong>Connect (A)</strong>.</li>
-        </ol>
-        <figure class="shot"><img src="assets/lab2/image1.png" alt="Connect" loading="lazy" /></figure>
-        <ol start="4">
-          <li>Ingresa la contraseña <code>IBMDem0s!</code> (A) y haz clic en <strong>Send Credentials (B)</strong>.</li>
-        </ol>
-        <div class="note">Eso es un <strong>cero numérico</strong> en <code>IBMDem0s!</code> (no la letra O).</div>
-        <figure class="shot"><img src="assets/lab2/image3.png" alt="Send Credentials" loading="lazy" /></figure>
-        <p>Una vez dentro verás el escritorio con navegadores, terminal, etc.</p>
-        <table>
-          <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
-          <tbody>
-            <tr><td>ID de usuario VM</td><td><code>techzone</code></td></tr>
-            <tr><td>Contraseña VM</td><td><code>IBMDem0s!</code></td></tr>
-          </tbody>
-        </table>
-        <figure class="shot"><img src="assets/lab2/image8.png" alt="Escritorio demo" loading="lazy" /></figure>
-
-        <h3>Consejos noVNC</h3>
-        <p>Puedes ajustar el tamaño del área visible con <strong>noVNC Settings</strong>.</p>
-        <ol>
-          <li>Abre el twisty del panel de control noVNC (A).</li>
-        </ol>
-        <figure class="shot"><img src="assets/lab2/image9.png" alt="noVNC menu" loading="lazy" /></figure>
-        <ol start="2">
-          <li>Settings (A) → <strong>Remote Resizing</strong> en Scaling Mode (B).</li>
-        </ol>
-        <figure class="shot"><img src="assets/lab2/image2.png" alt="Remote Resizing" loading="lazy" /></figure>
-        <p>Para pegar texto de la guía en la VM: usa el <strong>Clipboard</strong> de noVNC.</p>
-        <ol>
-          <li>Copia el texto de esta guía.</li>
-          <li>Ícono Clipboard (A) → pega en el portapapeles noVNC (B).</li>
-        </ol>
-        <figure class="shot"><img src="assets/lab2/image4.png" alt="Clipboard noVNC" loading="lazy" /></figure>
-        <p>Luego pega en la terminal/navegador de la VM y cierra el clipboard.</p>
-
-        <h3>Iniciar el entorno de WebSphere</h3>
-        <p>Ejecuta el script que inicia deployment manager, nodos AppSrv01/AppSrv02 e IBM HTTP Server:</p>
-        <div class="prewrap"><pre>/home/techzone/demos/ManagedLiberty-MoRE/tx-more-lab/scripts/start-was-servers.sh</pre></div>
-
-        <div class="note warn">
-          <strong>Reiniciar el entorno (solo si es necesario):</strong>
-          <div class="prewrap" style="margin-top:.6rem"><pre>/home/techzone/demos/ManagedLiberty-MoRE/tx-more-lab/scripts/reset-lab-environment.sh</pre></div>
-        </div>
-
-        <h3>Consola de administración de WebSphere</h3>
-        <ol>
-          <li>Abre Chrome en la VM.</li>
-          <li>Ve a: <code>https://localhost:9043/ibm/console</code></li>
-          <li>Credenciales: ID <code>techzone</code> / Password <code>IBMDem0s!</code></li>
-        </ol>
-        <div class="note">Si aparece popup de autenticación del navegador, ingresa <code>IBMDem0s!</code> y Unlock.</div>
-        <figure class="shot"><img src="assets/lab2/image6.png" alt="Consola WebSphere" loading="lazy" /></figure>
-
-        <h3>Iniciar AMA</h3>
-        <div class="prewrap"><pre>cd /home/techzone/application-modernization-accelerator-local-4.6.0
-./launch.sh</pre></div>
-        <p>Selecciona la opción <strong>#5</strong> para INICIAR AMA.</p>
-        <p>URL en la VM:</p>
-        <div class="prewrap"><pre>https://rhel9-base.gym.lan:3001/</pre></div>
-        <p>Con esto termina la preparación del entorno.</p>
-      </div>
-
-      <div class="card">
-        <h2>Inicio del laboratorio</h2>
-
-        <h3>Clonar el proyecto</h3>
-        <p>Abre la Terminal y crea el directorio de trabajo:</p>
-        <div class="prewrap"><pre>mkdir -p ~/Student_3
-git clone -b v4 https://github.ibm.com/claudia-rejas/JOSSO-weblogic-bob.git ~/Student_3/JOSSO-weblogic-bob
-cd ~/Student_3/JOSSO-weblogic-bob
-git checkout v4</pre></div>
-        <figure class="shot"><img src="assets/lab2/image12.png" alt="Clone proyecto" loading="lazy" /></figure>
-
-        <h3>Iniciar AMA para el lab</h3>
-        <div class="prewrap"><pre>cd ~/application-modernization-accelerator-local-4.6.0/
-./launch.sh</pre></div>
-        <p>Al inicializar AMA deberías ver pantallas como estas; elige la opción <strong>5</strong> para iniciar:</p>
-        <figure class="shot"><img src="assets/lab2/image17.png" alt="AMA init" loading="lazy" /></figure>
-        <figure class="shot"><img src="assets/lab2/image18.png" alt="AMA menú opción 5" loading="lazy" /></figure>
-        <p>Mensaje esperado con la URL:</p>
-        <div class="prewrap"><pre>Application Modernization Accelerator 4.6.0 is available for use at the following URL>
-https://rhel9-base.gym.lan:3001</pre></div>
-        <figure class="shot"><img src="assets/lab2/image13.png" alt="AMA URL disponible" loading="lazy" /></figure>
-        <figure class="shot"><img src="assets/lab2/image10.png" alt="AMA UI" loading="lazy" /></figure>
-
-        <h3>Workspace y Discovery Tool</h3>
-        <ol>
-          <li>Crea un workspace con el nombre: <code>josso_weblogics</code></li>
-        </ol>
-        <figure class="shot"><img src="assets/lab2/image21.png" alt="Crear workspace" loading="lazy" /></figure>
-        <ol start="2">
-          <li><strong>Create/Open discovery tool</strong></li>
-        </ol>
-        <figure class="shot"><img src="assets/lab2/image19.png" alt="Discovery tool" loading="lazy" /></figure>
-        <ol start="3">
-          <li>Elige sistema operativo <strong>Linux</strong> → <strong>Download discovery tool</strong></li>
-        </ol>
-        <figure class="shot"><img src="assets/lab2/image15.png" alt="Download discovery tool" loading="lazy" /></figure>
-
-        <p>En la terminal:</p>
-        <div class="prewrap"><pre>mkdir -p ~/Student_3/ama_discovery
-cd ~/Student_3/ama_discovery
-tar -zxvf ~/Downloads/DiscoveryTool-Linux_josso_weblogics.tgz
-
-cd ~/Student_3/ama_discovery/ama-discovery-4.6.0
-./bin/ama-discovery --web-logic-apps-location \
-~/Student_3/JOSSO-weblogic-bob/ama-artifacts/</pre></div>
-        <p>Acepta la licencia con <strong>1</strong> y elige Java <strong>1.8</strong> con la opción <strong>4</strong>.</p>
-        <figure class="shot"><img src="assets/lab2/image16.png" alt="Discovery running" loading="lazy" /></figure>
-
-        <h3>Replatform a Liberty</h3>
-        <p>Vuelve a AMA: <code>https://rhel9-base.gym.lan:3001</code> → opciones de replatform → elige <strong>Liberty</strong>.</p>
-        <figure class="shot"><img src="assets/lab2/image11.png" alt="Replatform Liberty" loading="lazy" /></figure>
-        <p>Discovery State / componente identificado:</p>
-        <div class="prewrap"><pre>josso-gateway-web-1.8.12-SNAPSHOT.war</pre></div>
-        <figure class="shot"><img src="assets/lab2/image23.png" alt="Discovery State" loading="lazy" /></figure>
-        <p>En assessment:</p>
-        <figure class="shot"><img src="assets/lab2/image20.png" alt="Assessment" loading="lazy" /></figure>
-        <p>En el componente WAR revisa: complejidad, destino Liberty, origen WebLogic, esfuerzo estimado. Luego <strong>Detalles</strong>:</p>
-        <figure class="shot"><img src="assets/lab2/image22.png" alt="Detalles migración" loading="lazy" /></figure>
+        <h2>Migration plan y Bob</h2>
         <p><strong>View migration plan</strong> → descargar:</p>
         <figure class="shot"><img src="assets/lab2/image25.png" alt="View migration plan" loading="lazy" /></figure>
         <figure class="shot"><img src="assets/lab2/image26.png" alt="Abrir plan en Bob" loading="lazy" /></figure>
+        <div class="note">
+          Para ver el proceso de obtención del plan con AMA (entorno, discovery y replatform), revisa el
+          <a href="#anexos"><strong>Anexo</strong></a> al final de este laboratorio.
+        </div>
         <p>Referencia: <a href="https://heidloff.net/article/bob-java-application-modernization/" target="_blank" rel="noreferrer">heidloff.net — Bob Java application modernization</a></p>
       </div>
 
@@ -284,6 +155,148 @@ JOSSO Status</pre></div>
         <div class="prewrap"><pre>Ahora haz que el botón Liberty Admin de la barra de navegación use la adminUrl que ya resuelve ServerDetectListener, para que abra el Admin Center de Liberty correctamente desde la aplicación.</pre></div>
 
         <p><strong>Resultado:</strong> aplicación desplegada en Liberty, funcional como en WebLogic.</p>
+      </div>
+
+      <!-- ================= ANEXOS ================= -->
+      <div class="card" id="anexos">
+        <h2>Anexos</h2>
+        <p class="lede" style="margin-bottom:1rem">
+          Detalle opcional: preparación del entorno y proceso de obtención del migration plan con AMA.
+        </p>
+
+        <h3>A. Preparación del entorno</h3>
+        <p>Pasos previos para configurar el entorno de demostración (noVNC / VM del lab, si aplica).</p>
+
+        <h4>Acceder al entorno de demostración</h4>
+        <ol>
+          <li>Cuando el entorno esté listo, haz clic en <strong>“Open this Environment”</strong> en el mosaico de reserva.</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image7.png" alt="Open this Environment" loading="lazy" /></figure>
+        <ol start="2">
+          <li>En la página de detalles, abre el enlace <strong>Published services → noVNC URL</strong>.</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image5.png" alt="noVNC URL" loading="lazy" /></figure>
+        <ol start="3">
+          <li>Haz clic en el botón <strong>Connect (A)</strong>.</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image1.png" alt="Connect" loading="lazy" /></figure>
+        <ol start="4">
+          <li>Ingresa la contraseña <code>IBMDem0s!</code> (A) y haz clic en <strong>Send Credentials (B)</strong>.</li>
+        </ol>
+        <div class="note">Eso es un <strong>cero numérico</strong> en <code>IBMDem0s!</code> (no la letra O).</div>
+        <figure class="shot"><img src="assets/lab2/image3.png" alt="Send Credentials" loading="lazy" /></figure>
+        <p>Una vez dentro verás el escritorio con navegadores, terminal, etc.</p>
+        <table>
+          <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td>ID de usuario VM</td><td><code>techzone</code></td></tr>
+            <tr><td>Contraseña VM</td><td><code>IBMDem0s!</code></td></tr>
+          </tbody>
+        </table>
+        <figure class="shot"><img src="assets/lab2/image8.png" alt="Escritorio demo" loading="lazy" /></figure>
+
+        <h4>Consejos noVNC</h4>
+        <p>Puedes ajustar el tamaño del área visible con <strong>noVNC Settings</strong>.</p>
+        <ol>
+          <li>Abre el twisty del panel de control noVNC (A).</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image9.png" alt="noVNC menu" loading="lazy" /></figure>
+        <ol start="2">
+          <li>Settings (A) → <strong>Remote Resizing</strong> en Scaling Mode (B).</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image2.png" alt="Remote Resizing" loading="lazy" /></figure>
+        <p>Para pegar texto de la guía en la VM: usa el <strong>Clipboard</strong> de noVNC.</p>
+        <ol>
+          <li>Copia el texto de esta guía.</li>
+          <li>Ícono Clipboard (A) → pega en el portapapeles noVNC (B).</li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image4.png" alt="Clipboard noVNC" loading="lazy" /></figure>
+        <p>Luego pega en la terminal/navegador de la VM y cierra el clipboard.</p>
+
+        <h4>Iniciar el entorno de WebSphere</h4>
+        <p>Ejecuta el script que inicia deployment manager, nodos AppSrv01/AppSrv02 e IBM HTTP Server:</p>
+        <div class="prewrap"><pre>/home/techzone/demos/ManagedLiberty-MoRE/tx-more-lab/scripts/start-was-servers.sh</pre></div>
+
+        <div class="note warn">
+          <strong>Reiniciar el entorno (solo si es necesario):</strong>
+          <div class="prewrap" style="margin-top:.6rem"><pre>/home/techzone/demos/ManagedLiberty-MoRE/tx-more-lab/scripts/reset-lab-environment.sh</pre></div>
+        </div>
+
+        <h4>Consola de administración de WebSphere</h4>
+        <ol>
+          <li>Abre Chrome en la VM.</li>
+          <li>Ve a: <code>https://localhost:9043/ibm/console</code></li>
+          <li>Credenciales: ID <code>techzone</code> / Password <code>IBMDem0s!</code></li>
+        </ol>
+        <div class="note">Si aparece popup de autenticación del navegador, ingresa <code>IBMDem0s!</code> y Unlock.</div>
+        <figure class="shot"><img src="assets/lab2/image6.png" alt="Consola WebSphere" loading="lazy" /></figure>
+
+        <h4>Iniciar AMA</h4>
+        <div class="prewrap"><pre>cd /home/techzone/application-modernization-accelerator-local-4.6.0
+./launch.sh</pre></div>
+        <p>Selecciona la opción <strong>#5</strong> para INICIAR AMA.</p>
+        <p>URL en la VM:</p>
+        <div class="prewrap"><pre>https://rhel9-base.gym.lan:3001/</pre></div>
+        <p>Con esto termina la preparación del entorno.</p>
+
+        <h3>B. Obtención del migration plan con AMA</h3>
+
+        <h4>Clonar el proyecto</h4>
+        <p>Abre la Terminal y crea el directorio de trabajo:</p>
+        <div class="prewrap"><pre>mkdir -p ~/Student_3
+git clone -b v4 https://github.ibm.com/claudia-rejas/JOSSO-weblogic-bob.git ~/Student_3/JOSSO-weblogic-bob
+cd ~/Student_3/JOSSO-weblogic-bob
+git checkout v4</pre></div>
+        <figure class="shot"><img src="assets/lab2/image12.png" alt="Clone proyecto" loading="lazy" /></figure>
+
+        <h4>Iniciar AMA para el lab</h4>
+        <div class="prewrap"><pre>cd ~/application-modernization-accelerator-local-4.6.0/
+./launch.sh</pre></div>
+        <p>Al inicializar AMA deberías ver pantallas como estas; elige la opción <strong>5</strong> para iniciar:</p>
+        <figure class="shot"><img src="assets/lab2/image17.png" alt="AMA init" loading="lazy" /></figure>
+        <figure class="shot"><img src="assets/lab2/image18.png" alt="AMA menú opción 5" loading="lazy" /></figure>
+        <p>Mensaje esperado con la URL:</p>
+        <div class="prewrap"><pre>Application Modernization Accelerator 4.6.0 is available for use at the following URL>
+https://rhel9-base.gym.lan:3001</pre></div>
+        <figure class="shot"><img src="assets/lab2/image13.png" alt="AMA URL disponible" loading="lazy" /></figure>
+        <figure class="shot"><img src="assets/lab2/image10.png" alt="AMA UI" loading="lazy" /></figure>
+
+        <h4>Workspace y Discovery Tool</h4>
+        <ol>
+          <li>Crea un workspace con el nombre: <code>josso_weblogics</code></li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image21.png" alt="Crear workspace" loading="lazy" /></figure>
+        <ol start="2">
+          <li><strong>Create/Open discovery tool</strong></li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image19.png" alt="Discovery tool" loading="lazy" /></figure>
+        <ol start="3">
+          <li>Elige sistema operativo <strong>Linux</strong> → <strong>Download discovery tool</strong></li>
+        </ol>
+        <figure class="shot"><img src="assets/lab2/image15.png" alt="Download discovery tool" loading="lazy" /></figure>
+
+        <p>En la terminal:</p>
+        <div class="prewrap"><pre>mkdir -p ~/Student_3/ama_discovery
+cd ~/Student_3/ama_discovery
+tar -zxvf ~/Downloads/DiscoveryTool-Linux_josso_weblogics.tgz
+
+cd ~/Student_3/ama_discovery/ama-discovery-4.6.0
+./bin/ama-discovery --web-logic-apps-location \
+~/Student_3/JOSSO-weblogic-bob/ama-artifacts/</pre></div>
+        <p>Acepta la licencia con <strong>1</strong> y elige Java <strong>1.8</strong> con la opción <strong>4</strong>.</p>
+        <figure class="shot"><img src="assets/lab2/image16.png" alt="Discovery running" loading="lazy" /></figure>
+
+        <h4>Replatform a Liberty</h4>
+        <p>Vuelve a AMA: <code>https://rhel9-base.gym.lan:3001</code> → opciones de replatform → elige <strong>Liberty</strong>.</p>
+        <figure class="shot"><img src="assets/lab2/image11.png" alt="Replatform Liberty" loading="lazy" /></figure>
+        <p>Discovery State / componente identificado:</p>
+        <div class="prewrap"><pre>josso-gateway-web-1.8.12-SNAPSHOT.war</pre></div>
+        <figure class="shot"><img src="assets/lab2/image23.png" alt="Discovery State" loading="lazy" /></figure>
+        <p>En assessment:</p>
+        <figure class="shot"><img src="assets/lab2/image20.png" alt="Assessment" loading="lazy" /></figure>
+        <p>En el componente WAR revisa: complejidad, destino Liberty, origen WebLogic, esfuerzo estimado. Luego <strong>Detalles</strong>:</p>
+        <figure class="shot"><img src="assets/lab2/image22.png" alt="Detalles migración" loading="lazy" /></figure>
+        <p>A continuación: <strong>View migration plan</strong> → descargar (vuelve al flujo principal del laboratorio).</p>
       </div>
     </main>
   </div>
