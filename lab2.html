@@ -60,15 +60,31 @@
         <h2>Exploración de la app inicial</h2>
         <div class="prewrap"><pre>git clone -b v4 https://github.com/Claudia-Fernanda-Rejas-Ruiz/JOSSO-weblogic-bob.git JOSSO-weblogic-bob-v4-FRESH</pre></div>
         <table>
-          <thead><tr><th>URL</th><th>Acceso</th></tr></thead>
+          <thead><tr><th>Servicio</th><th>URL</th><th>Usuario</th><th>Contraseña</th></tr></thead>
           <tbody>
             <tr>
-              <td><code>http://localhost:7001/console</code></td>
-              <td>Admin Console WebLogic<br/>Usuario: <code>weblogic</code> / contraseña: <code>welcome1</code></td>
+              <td>JOSSO Login</td>
+              <td><code>http://localhost:7001/josso-gateway-web/signon/login.do</code></td>
+              <td><code>bob</code> / <code>alice</code></td>
+              <td><code>bobpwd</code> / <code>alicepwd</code></td>
             </tr>
             <tr>
-              <td><code>http://localhost:7001/josso-gateway-web/signon/login.do</code></td>
-              <td>JOSSO Login<br/>Usuario: <code>bob</code> / contraseña: <code>bobpwd</code></td>
+              <td>Server Status</td>
+              <td><code>http://localhost:7001/josso-gateway-web/admin/server-status.jsp</code></td>
+              <td><code>bob</code> / <code>alice</code></td>
+              <td><code>bobpwd</code> / <code>alicepwd</code></td>
+            </tr>
+            <tr>
+              <td>Health Check</td>
+              <td><code>http://localhost:7001/josso-gateway-web/admin/health.jsp</code></td>
+              <td><code>bob</code> / <code>alice</code></td>
+              <td><code>bobpwd</code> / <code>alicepwd</code></td>
+            </tr>
+            <tr>
+              <td>WLS Admin Console</td>
+              <td><code>https://localhost:9002/console/login/LoginForm.jsp</code></td>
+              <td><code>weblogic</code></td>
+              <td><code>welcome1</code></td>
             </tr>
           </tbody>
         </table>
@@ -84,6 +100,12 @@
           <a href="#anexos"><strong>Anexo</strong></a> al final de este laboratorio.
         </div>
         <p>Referencia: <a href="https://heidloff.net/article/bob-java-application-modernization/" target="_blank" rel="noreferrer">heidloff.net — Bob Java application modernization</a></p>
+      </div>
+
+      <div class="card">
+        <h2>Prompt previo al workflow · Liberar puertos</h2>
+        <p>Antes de iniciar el workflow, ejecuta este prompt en Bob para asegurarte de que los puertos estén libres:</p>
+        <div class="prewrap"><pre>Antes de iniciar el workflow de Liberty Modernization, verifica si los puertos 9083 y 9444 están ocupados. Si hay algún proceso Java, contenedor de Podman o cualquier otra cosa usando esos puertos, mátalos y libéralos. También verifica si hay algún servidor Liberty corriendo localmente y detenlo. Confirma que ambos puertos están libres antes de continuar.</pre></div>
       </div>
 
       <div class="card">
@@ -104,57 +126,9 @@
       </div>
 
       <div class="card">
-        <h2>Prompts post-migración (Liberty end-to-end)</h2>
-        <p>
-          Cuando el workflow termine, la migración debería verse en Podman. Para el panel admin
-          de Liberty (como en WebLogic), usa estos prompts:
-        </p>
-
-        <h3>Primer prompt</h3>
-        <div class="prewrap"><pre>Bob, dame las urls activas y funcionales de la aplicación</pre></div>
-
-        <h3>Segundo prompt</h3>
-        <div class="prewrap"><pre>Configura el despliegue de JOSSO Gateway en Liberty para que funcione correctamente end-to-end. Aplica todos estos cambios de una sola vez:
-
-1. gateway/src/main/liberty/config/server.xml
-Features: servlet-3.1, jsp-2.3, mpMetrics-1.1, adminCenter-1.0, localConnector-1.0
-Los puertos NO deben ser números fijos — deben ser variables de Liberty: httpPort="${liberty.http.port}" y httpsPort="${liberty.https.port}"
-El elemento &lt;application&gt; debe tener: location="josso-gateway-web-1.8.12-SNAPSHOT.war", context-root="/josso-gateway-web", id="josso-gateway-web", name="josso-gateway-web"
-Las credenciales deben usar ${liberty.admin.user} y ${liberty.admin.password} en &lt;quickStartSecurity&gt; (NO usar ${env.*}, no funciona en quickStartSecurity)
-
-2. Containerfile (raíz del proyecto)
-Las rutas de copia deben ser relativas a la raíz del proyecto: ./gateway/src/main/liberty/config/* y ./gateway/web/target/*.*ar y ./gateway/src/main/liberty/lib
-
-3. Makefile — variables y target liberty-setup
-Los puertos deben definirse con ?= para poder sobreescribirse: LIBERTY_HTTP ?= 9086 y LIBERTY_HTTPS ?= 9449
-Antes del podman run, generar $(HOME)/josso-bootstrap.properties con printf que incluya las 4 propiedades: liberty.admin.user=admin, liberty.admin.password=admin, liberty.http.port=$(LIBERTY_HTTP), liberty.https.port=$(LIBERTY_HTTPS)
-El podman run debe montar ese archivo: -v $(HOME)/josso-bootstrap.properties:/config/bootstrap.properties:ro
-No usar -e LIBERTY_ADMIN_USER ni -e LIBERTY_ADMIN_PASSWORD
-
-4. gateway/web/src/main/webapp/admin/libraries.jsp
-Reemplazar el bloque de detección del servidor (variables serverInfo, isWebLogic, isLiberty, adminUrl, etc.) por &lt;%@ include file="/WEB-INF/jsp/_server-detect.jsp" %&gt; seguido de String adminLabel = isWebLogic ? "WLS Console" : (isLiberty ? "Liberty Admin" : null);
-Buscar y eliminar cualquier línea String ctx = request.getContextPath(); que quede en el mismo archivo después del include — ya viene declarada dentro del include y causaría error de compilación JSP Duplicate local variable ctx
-
-Una vez aplicados todos los cambios, ejecuta make liberty-setup y confirma que:
-Liberty arranca con CWWKZ0001I: Application josso-gateway-web started
-No hay errores de autenticación CWWKS1100A
-curl -o /dev/null -w "%{http_code}" http://localhost:$(LIBERTY_HTTP)/josso-gateway-web/admin/libraries.jsp devuelve 200
-
-Al terminar, muéstrame las URLs y credenciales de acceso:
-Admin Center Liberty (usuario y contraseña)
-JOSSO Login
-JOSSO Status</pre></div>
-        <div class="note">
-          Con esto tendrás el panel funcional. Si además quieres el botón Admin desde la app, continúa con los prompts 3 y 4.
-        </div>
-
-        <h3>Tercer prompt</h3>
-        <div class="prewrap"><pre>Revisa los JARs marcados como CRIT o WARN en el Library Stack de health.jsp y elimina los que ya no sean necesarios en Liberty, sin romper la funcionalidad de la aplicación. Justifica cada eliminación y confirma que Liberty sigue arrancando correctamente después de la limpieza.</pre></div>
-
-        <h3>Cuarto prompt</h3>
-        <div class="prewrap"><pre>Ahora haz que el botón Liberty Admin de la barra de navegación use la adminUrl que ya resuelve ServerDetectListener, para que abra el Admin Center de Liberty correctamente desde la aplicación.</pre></div>
-
-        <p><strong>Resultado:</strong> aplicación desplegada en Liberty, funcional como en WebLogic.</p>
+        <h2>Prompt post-migración · Verificar estado final</h2>
+        <p>Cuando el workflow termine, ejecuta este prompt en Bob para confirmar que la aplicación está desplegada y accesible:</p>
+        <div class="prewrap"><pre>Obtén las credenciales del Admin Center. Dime en qué puertos está configurado Liberty, el nombre del WAR, y verifica con curl que estos endpoints estén respondiendo: login de JOSSO, server status, health check y Admin Center de Liberty. El Admin Center debe estar levantado y ser accesible con sus credenciales antes de incluirlo en la tabla. Presenta el resultado en una tabla: servicio | URL | usuario/contraseña | estado HTTP. Si alguno no responde o las credenciales no funcionan, indícalo explícitamente.</pre></div>
       </div>
 
       <!-- ================= ANEXOS ================= -->
