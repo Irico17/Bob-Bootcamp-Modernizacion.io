@@ -135,6 +135,35 @@ Si algún endpoint no responde o las credenciales no funcionan, indícalo explí
       </div>
 
       <div class="card">
+        <h2>Slash command · <code>/liberty-clean</code></h2>
+        <p>
+          Crea este slash command <strong>una sola vez</strong> antes de iniciar el workflow.
+          Después de la migración lo usarás para limpiar librerías incompatibles con Liberty
+          que quedaron del entorno WebLogic.
+        </p>
+        <p>Ejecuta este prompt en Bob en modo <strong>Agent</strong>:</p>
+        <div class="prewrap"><pre>Crea el archivo .bob/commands/liberty-clean.md con el siguiente contenido exacto:
+
+Analiza el proyecto JOSSO y detecta librerías que son específicas de WebLogic
+o que no son compatibles con WAS Liberty. Busca en:
+- El Makefile y Containerfile: rutas de copia de JARs
+- gateway/src/main/liberty/lib/: JARs incluidos manualmente
+- pom.xml: dependencias con scope provided o que referencien WebLogic
+
+Para cada librería incompatible encontrada:
+1. Identifica su nombre y por qué no es compatible con Liberty
+2. Indica si Liberty ya incluye un equivalente nativo
+3. Propón si debe eliminarse, reemplazarse o mantenerse con justificación
+
+Muestra el resultado en una tabla: Librería | Origen | Problema | Acción recomendada.
+No elimines ningún archivo todavía — solo el análisis y las recomendaciones.</pre></div>
+        <div class="note">
+          Una vez creado, escribe <code>/liberty-clean</code> en Bob después del workflow para obtener
+          el análisis completo. Bob no eliminará nada hasta que tú lo confirmes.
+        </div>
+      </div>
+
+      <div class="card">
         <h2>Workflow Bob · Liberty Replatforming</h2>
         <p>En Bob: <strong>Java Modernization</strong> → <strong>Liberty Replatforming</strong>.</p>
         <figure class="shot"><img src="assets/lab2/image27.png" alt="Liberty Replatforming en Bob" loading="lazy" /></figure>
