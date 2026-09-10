@@ -20,131 +20,274 @@
     </aside>
     <main class="wrap lab-content">
       <div class="eyebrow">LABORATORIO 1 · ~30 min</div>
-      <h1>Sistema de Gestión de Empleados</h1>
+      <h1>Documentación inteligente con Bob Premium</h1>
       <div class="meta">
-        <span class="pill">Documentación automática</span>
-        <span class="pill teal">Modernización Java</span>
+        <span class="pill">Skills</span>
+        <span class="pill teal">Custom Modes</span>
+        <span class="pill">Slash Commands</span>
+        <span class="pill teal">Ask · Plan · Agent</span>
       </div>
       <div class="actions">
         <a class="btn btn-primary" href="downloads/lab1-documentacion.zip" download>Descargar proyecto Lab 1</a>
       </div>
 
+      <!-- ===== ALCANCE ===== -->
       <div class="card">
-        <h2>Alcance del Hands-On</h2>
-        <p>Este lab se centra en el uso de <strong>Bob</strong> para acelerar la comprensión, documentación y modernización de una aplicación Java existente.</p>
-
-        <h3>Documentación automatizada</h3>
-        <p>Uso de agentes para analizar el proyecto existente y generar documentación técnica.</p>
-        <p><strong>Beneficios clave:</strong></p>
-        <ul>
-          <li>Comprensión rápida de proyectos existentes</li>
-          <li>Generación consistente de documentación</li>
-          <li>Reducción del esfuerzo manual de documentación</li>
-        </ul>
-
-        <h3>Modernización Java</h3>
-        <p>Uso del paquete de modernización Java de Bob para actualizar la versión del lenguaje y migrar dependencias obsoletas.</p>
-        <p><strong>Beneficios clave:</strong></p>
-        <ul>
-          <li>Detección automática de versiones desactualizadas</li>
-          <li>Aplicación de recetas de migración probadas</li>
-          <li>Reducción del riesgo de regresiones</li>
-        </ul>
+        <h2>¿Qué vas a aprender?</h2>
+        <p>
+          Este lab demuestra cómo usar las features de <strong>Bob Premium</strong> para documentar
+          una aplicación Java existente de forma profesional y en minutos.
+          En lugar de un único prompt genérico, construirás un <em>asistente especializado</em>
+          desde cero usando Skills, Custom Modes, Slash Commands y el flujo de modos Ask → Plan → Agent.
+        </p>
+        <p>
+          El proyecto a documentar es <strong>employee-management</strong>: una API REST en
+          Java 8 + Spring Boot 2 con MySQL que gestiona empleados, departamentos y roles.
+        </p>
+        <table>
+          <thead><tr><th>Feature de Bob Premium</th><th>Para qué la usarás en este lab</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Custom Mode</strong></td>
+              <td>Crear un modo <code>java-documenter</code> de solo lectura con rol de arquitecto técnico</td>
+            </tr>
+            <tr>
+              <td><strong>Skill</strong></td>
+              <td>Definir exactamente qué documentar en proyectos Java y reutilizarlo en cualquier proyecto</td>
+            </tr>
+            <tr>
+              <td><strong>Slash Command</strong></td>
+              <td>Disparar la documentación completa del proyecto con <code>/doc-java</code> en un solo paso</td>
+            </tr>
+            <tr>
+              <td><strong>Mode-specific rules</strong></td>
+              <td>Forzar español, tabla de endpoints y formato consistente solo cuando el modo está activo</td>
+            </tr>
+            <tr>
+              <td><strong>Ask → Plan → Agent</strong></td>
+              <td>Usar el modo correcto en cada etapa: explorar sin riesgo, planear, luego ejecutar</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
+      <!-- ===== PASO 0 ===== -->
       <div class="card">
-        <h2>Flujo del laboratorio</h2>
-
-        <h3>0. Instalar dependencias necesarias</h3>
+        <h2>Paso 0 · Configurar el asistente <span style="font-weight:400;font-size:0.85em;color:#57606a">(5 min)</span></h2>
         <p>
-          Instala las siguientes herramientas <strong>una sola vez</strong> antes de comenzar.
-          Las versiones indicadas son las que se usarán tras la modernización (pasos 2 y 3);
-          el paso 1 es solo análisis y documentación, por lo que <strong>no requiere compilar ni ejecutar</strong> la aplicación.
+          Abre la carpeta del proyecto <strong>employee-management</strong> en Bob.
+          Ejecuta cada uno de los siguientes prompts en modo <strong>Agent</strong> para crear
+          los archivos de configuración de Bob dentro del proyecto.
         </p>
 
-        <h4>Java 17 (JDK)</h4>
-        <p><strong>macOS:</strong></p>
-        <div class="prewrap"><pre>brew install --cask temurin@17</pre></div>
-        <p><strong>Windows:</strong></p>
-        <div class="prewrap"><pre>winget install EclipseAdoptium.Temurin.17.JDK</pre></div>
-        <p><strong>Linux:</strong></p>
-        <div class="prewrap"><pre>sudo apt install openjdk-17-jdk</pre></div>
-        <p>Verificar: <code>java -version  # debe mostrar 17.x</code></p>
+        <h3>A · Custom Mode — <code>java-documenter</code></h3>
+        <p>
+          Un <strong>Custom Mode</strong> define el rol, los permisos y las instrucciones base de Bob
+          para una tarea específica. Este modo tendrá permisos de solo lectura — Bob no podrá modificar
+          ningún archivo del proyecto accidentalmente.
+        </p>
+        <p><strong>Prompt:</strong></p>
+        <div class="prewrap"><pre>Crea el archivo .bob/custom_modes.yaml con el siguiente contenido exacto:
+
+customModes:
+  - slug: java-documenter
+    name: 📄 Java Documenter
+    description: Modo especializado para analizar y documentar proyectos Java existentes.
+    roleDefinition: >-
+      Eres un arquitecto de software senior especializado en documentar proyectos Java empresariales.
+      Tu único objetivo es analizar el código existente y producir documentación técnica clara,
+      completa y en español. Nunca modificas archivos de código fuente.
+    whenToUse: Úsalo cuando necesites documentar un proyecto Java existente.
+    customInstructions: >-
+      Documenta siempre en español. Incluye tabla de endpoints REST con método, URL y descripción.
+      Cita versiones exactas desde pom.xml. Organiza la documentación por capas: modelo, servicio, controlador.
+    groups:
+      - read
+      - edit
+      - skill</pre></div>
         <div class="note">
-          Asegúrate de que <code>JAVA_HOME</code> apunte al JDK 17.<br/>
-          macOS/Linux: <code>export JAVA_HOME=$(/usr/libexec/java_home -v 17)</code><br/>
-          Windows: configurar en <em>Variables de entorno del sistema</em>.
+          El grupo <code>read</code> permite leer archivos. El grupo <code>edit</code> permite escribir
+          archivos nuevos como <code>DOCUMENTACION.md</code>. El grupo <code>skill</code> permite activar
+          los skills definidos en <code>.bob/skills/</code>. No se incluye <code>command</code> para
+          que Bob no pueda ejecutar comandos de terminal.
         </div>
 
-        <h4>Apache Maven 3.8+</h4>
-        <p><strong>macOS:</strong></p>
-        <div class="prewrap"><pre>brew install maven</pre></div>
-        <p><strong>Windows:</strong></p>
-        <div class="prewrap"><pre>winget install Apache.Maven</pre></div>
-        <p><strong>Linux:</strong></p>
-        <div class="prewrap"><pre>sudo apt install maven</pre></div>
-        <p>Verificar: <code>mvn -version  # debe mostrar 3.8.x o superior</code></p>
+        <h3>B · Skill — <code>java-doc-expert</code></h3>
+        <p>
+          Un <strong>Skill</strong> es un conjunto de instrucciones especializadas almacenadas en
+          <code>.bob/skills/&lt;nombre&gt;/SKILL.md</code>. Bob lo activa automáticamente cuando
+          detecta que es relevante, o se invoca manualmente con <code>/java-doc-expert</code>.
+          A diferencia de un prompt en el chat, el skill persiste y se puede reutilizar en cualquier proyecto Java.
+        </p>
+        <p><strong>Prompt:</strong></p>
+        <div class="prewrap"><pre>Crea el archivo .bob/skills/java-doc-expert/SKILL.md con el siguiente contenido exacto:
 
-        <h4>MySQL 8.x</h4>
-        <p><strong>macOS:</strong></p>
-        <div class="prewrap"><pre>brew install mysql
-brew services start mysql</pre></div>
-        <p><strong>Windows:</strong> descargar el instalador desde <a href="https://dev.mysql.com/downloads/installer/" target="_blank" rel="noreferrer">dev.mysql.com/downloads/installer</a></p>
-        <p><strong>Linux:</strong></p>
-        <div class="prewrap"><pre>sudo apt install mysql-server
-sudo systemctl start mysql</pre></div>
-        <p>Verificar: <code>mysql --version  # debe mostrar 8.x</code></p>
+---
+name: java-doc-expert
+description: Úsalo cuando el usuario quiera documentar un proyecto Java existente. Genera documentación técnica completa en español.
+---
 
-        <h3>1. Analizar la solución existente y generar documentación técnica</h3>
-        <p>El participante abrirá el proyecto en Bob y le solicitará una explicación inicial de la arquitectura y los componentes disponibles, seguida de la generación de documentación técnica formal.</p>
-        <p><strong>Objetivo:</strong> comprender qué componentes existen y producir documentación clara antes de modernizar el código.</p>
-        <p><strong>Prompt ejemplo:</strong></p>
-        <div class="prewrap"><pre>Analiza este proyecto Java y genera documentación técnica completa en español.
+# Java Documentation Expert
 
-La documentación debe incluir:
-- descripción general de la solución y su propósito
-- stack tecnológico utilizado (versiones exactas del pom.xml)
-- estructura del repositorio y responsabilidad de cada capa
-- modelos de datos (entidades JPA y sus relaciones)
-- endpoints REST disponibles con métodos, URLs y descripción
-- configuración requerida en application.properties
-- supuestos y restricciones de la aplicación
-- pasos para ejecutar la solución localmente
-- posibles mejoras o extensiones del sistema</pre></div>
+Cuando se active este skill, analiza el proyecto Java abierto y genera documentación técnica completa.
 
-        <h3>2. Modernizar la aplicación usando el paquete Java de Bob</h3>
-        <p>Una vez comprendida y documentada la solución, el participante le pedirá a Bob que aplique las recetas de modernización Java disponibles para actualizar la versión del lenguaje y las dependencias obsoletas.</p>
-        <p><strong>Objetivo:</strong> llevar la aplicación a una versión moderna de Java y Spring Boot, eliminando dependencias desactualizadas y aplicando las mejores prácticas actuales.</p>
-        <p><strong>Prompt ejemplo:</strong></p>
-        <div class="prewrap"><pre>Moderniza esta aplicación Java usando el paquete de modernización de Java de Bob.
+## Qué debes documentar
 
-Por favor:
-- detecta la versión actual de Java y Spring Boot en uso
-- identifica dependencias desactualizadas o con vulnerabilidades conocidas
-- aplica las recetas de migración disponibles para actualizar a una versión moderna de Java
-- actualiza Spring Boot a la versión estable más reciente compatible
-- reporta los cambios aplicados y cualquier ajuste manual necesario
-- verifica que el proyecto compile y los tests pasen tras la modernización</pre></div>
+1. **Descripción general** — propósito de la aplicación y problema que resuelve
+2. **Stack tecnológico** — versiones exactas desde pom.xml (Java, Spring Boot, dependencias clave)
+3. **Arquitectura** — estructura del repositorio y responsabilidad de cada capa (modelo, repositorio, servicio, controlador)
+4. **Modelos de datos** — entidades JPA, campos relevantes y relaciones entre ellas
+5. **Endpoints REST** — tabla con método HTTP, URL, descripción y parámetros esperados
+6. **Configuración** — propiedades requeridas en application.properties o application.yml
+7. **Cómo ejecutar** — pasos para correr la aplicación localmente
+8. **Observaciones** — posibles mejoras, deuda técnica o puntos de atención
 
-        <h3>3. Ejecutar y validar la aplicación modernizada</h3>
-        <p>Después de completar la modernización, el participante ejecutará la aplicación desde la carpeta raíz del proyecto para verificar que inicia correctamente y que no existen errores de compilación o configuración.</p>
-        <p><strong>Objetivo:</strong> comprobar de forma práctica que la aplicación modernizada puede ejecutarse correctamente en un entorno local.</p>
-        <p><strong>macOS o Linux:</strong></p>
-        <div class="prewrap"><pre>./mvnw spring-boot:run</pre></div>
-        <p><strong>Windows:</strong></p>
-        <div class="prewrap"><pre>mvnw.cmd spring-boot:run</pre></div>
-        <div class="note">Si el ZIP no incluye Maven Wrapper, usa <code>mvn spring-boot:run</code>.</div>
-        <p>Una vez iniciada la aplicación, revisa la consola para confirmar que Spring Boot se levantó correctamente y accede a los endpoints disponibles para validar su funcionamiento.</p>
+## Formato de salida
+
+- Escribe en español
+- Usa headers Markdown (##, ###)
+- Usa tablas para endpoints y modelos de datos
+- Sé preciso: cita nombres de clases, métodos y archivos reales del proyecto</pre></div>
+
+        <h3>C · Slash Command — <code>/doc-java</code></h3>
+        <p>
+          Un <strong>Slash Command</strong> es un archivo <code>.md</code> dentro de <code>.bob/commands/</code>.
+          El nombre del archivo se convierte en el comando. Al escribir <code>/doc-java</code> en el chat,
+          Bob ejecuta las instrucciones del archivo de forma inmediata. Es la forma de estandarizar
+          workflows del equipo sin depender de que cada persona recuerde el prompt correcto.
+        </p>
+        <p><strong>Prompt:</strong></p>
+        <div class="prewrap"><pre>Crea el archivo .bob/commands/doc-java.md con el siguiente contenido exacto:
+
+Activa el skill java-doc-expert y genera la documentación técnica completa
+del proyecto Java actualmente abierto.
+Guarda el resultado en un archivo llamado DOCUMENTACION.md en la raíz del proyecto.</pre></div>
+
+        <h3>D · Mode-specific rules — <code>java-documenter</code></h3>
+        <p>
+          Las <strong>mode-specific rules</strong> se almacenan en <code>.bob/rules-{slug}/</code>
+          y se aplican únicamente cuando ese modo está activo. Permiten imponer estándares de equipo
+          sin tener que repetirlos en cada prompt.
+        </p>
+        <p><strong>Prompt:</strong></p>
+        <div class="prewrap"><pre>Crea el archivo .bob/rules-java-documenter/standards.md con el siguiente contenido exacto:
+
+# Estándares de documentación Java
+
+- Toda la documentación debe estar escrita en **español**
+- Los endpoints REST siempre deben presentarse en tabla con columnas: Método | URL | Descripción
+- Las versiones del stack deben extraerse del pom.xml, nunca suponer versiones
+- Si no encuentras información suficiente para una sección, indícalo explícitamente
+- No generes código nuevo ni modifiques archivos del proyecto</pre></div>
+
+        <div class="note">
+          Al terminar el Paso 0 tendrás esta estructura dentro del proyecto <strong>employee-management</strong>:<br/><br/>
+          <code>.bob/custom_modes.yaml</code> — define el modo java-documenter<br/>
+          <code>.bob/skills/java-doc-expert/SKILL.md</code> — instrucciones de documentación<br/>
+          <code>.bob/commands/doc-java.md</code> — slash command /doc-java<br/>
+          <code>.bob/rules-java-documenter/standards.md</code> — reglas del modo
+        </div>
       </div>
 
+      <!-- ===== PASO 1 ===== -->
+      <div class="card">
+        <h2>Paso 1 · Explorar el proyecto <span style="font-weight:400;font-size:0.85em;color:#57606a">Ask mode · 5 min</span></h2>
+        <p>
+          Con el proyecto <strong>employee-management</strong> abierto en Bob, cambia al modo
+          <strong>Ask</strong> haciendo clic en el selector de modo a la izquierda del campo de chat
+          y seleccionando <strong>Ask</strong>, o escribe <code>/ask</code> en el chat.
+        </p>
+        <p>
+          Ask mode solo puede leer archivos — nunca modificarlos. Es el modo correcto para
+          explorar un proyecto desconocido sin riesgo de cambios accidentales.
+        </p>
+        <p><strong>Prompt:</strong></p>
+        <div class="prewrap"><pre>Explícame qué hace esta aplicación, qué problema resuelve y cómo está estructurada.
+Identifica las capas principales, las entidades del dominio y los endpoints REST disponibles.</pre></div>
+        <p>
+          Observa cómo Bob navega por los archivos (<code>pom.xml</code>, entidades, controladores,
+          <code>application.properties</code>) sin proponer ningún cambio. Ese es el comportamiento
+          correcto de Ask mode.
+        </p>
+      </div>
+
+      <!-- ===== PASO 2 ===== -->
+      <div class="card">
+        <h2>Paso 2 · Planear la documentación <span style="font-weight:400;font-size:0.85em;color:#57606a">Plan mode · 5 min</span></h2>
+        <p>
+          Cambia al modo <strong>Plan</strong> desde el selector de modo o escribe <code>/plan</code>
+          en el chat. En Plan mode Bob propone estructuras y organiza el trabajo — tampoco escribe archivos todavía.
+        </p>
+        <p><strong>Prompt:</strong></p>
+        <div class="prewrap"><pre>Basándote en lo que analizaste del proyecto employee-management, diseña la estructura
+de la documentación técnica que generaremos.
+Propón las secciones que debe tener el archivo DOCUMENTACION.md, en qué orden y por qué
+cada una es relevante para este proyecto específico.</pre></div>
+        <p>
+          Bob propondrá un índice justificado. Puedes ajustar lo que no te convenza antes de generar nada.
+          Este paso separa el <em>"qué documentar"</em> del <em>"cómo escribirlo"</em> — un hábito
+          clave al trabajar con agentes en proyectos reales.
+        </p>
+      </div>
+
+      <!-- ===== PASO 3 ===== -->
+      <div class="card">
+        <h2>Paso 3 · Generar la documentación <span style="font-weight:400;font-size:0.85em;color:#57606a">java-documenter mode · 10 min</span></h2>
+        <p>
+          Cambia al modo <strong>📄 Java Documenter</strong> que creaste en el Paso 0.
+          Aparecerá en el selector de modo junto a Ask, Plan y Agent.
+        </p>
+        <p>
+          Verás que Bob adopta el rol de arquitecto documentador y solo tiene permisos de lectura
+          más acceso a skills. Ahora escribe en el chat:
+        </p>
+        <div class="prewrap"><pre>/doc-java</pre></div>
+        <p>
+          Bob activará el skill <code>java-doc-expert</code>, aplicará los estándares del modo
+          y generará el archivo <code>DOCUMENTACION.md</code> en la raíz del proyecto con la documentación
+          técnica completa del sistema <strong>employee-management</strong>.
+        </p>
+        <div class="note">
+          Si Bob solicita confirmación para activar el skill, haz clic en <strong>Aprobar</strong>.
+          Para evitar esta confirmación en el futuro, activa <em>Settings → Auto-Approve → Skills</em>.
+        </div>
+        <p>
+          Una vez generado el archivo, ábrelo y verifica que incluya las secciones definidas en el skill:
+          stack tecnológico, arquitectura por capas, modelos de datos (Employee, Department, Role),
+          tabla de endpoints REST y pasos para ejecutar la aplicación localmente.
+        </p>
+      </div>
+
+      <!-- ===== RESULTADO ===== -->
       <div class="card">
         <h2>Resultado esperado</h2>
-        <ul>
-          <li>Documentación técnica completa generada automáticamente por Bob</li>
-          <li>La aplicación migrada a una versión moderna de Java y Spring Boot con dependencias actualizadas</li>
-          <li>Una comprensión práctica del flujo de análisis, documentación y modernización asistido por agentes</li>
-        </ul>
+        <table>
+          <thead><tr><th>Entregable</th><th>Qué demuestra</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>.bob/custom_modes.yaml</code></td>
+              <td>Cómo especializar a Bob para una tarea con permisos acotados y rol específico</td>
+            </tr>
+            <tr>
+              <td><code>.bob/skills/java-doc-expert/SKILL.md</code></td>
+              <td>Cómo crear instrucciones reutilizables que Bob activa automáticamente</td>
+            </tr>
+            <tr>
+              <td><code>.bob/commands/doc-java.md</code></td>
+              <td>Cómo estandarizar un workflow del equipo con un slash command de una palabra</td>
+            </tr>
+            <tr>
+              <td><code>.bob/rules-java-documenter/standards.md</code></td>
+              <td>Cómo imponer estándares de calidad sin repetirlos en cada prompt</td>
+            </tr>
+            <tr>
+              <td><code>DOCUMENTACION.md</code></td>
+              <td>Documentación técnica completa del sistema employee-management generada por Bob</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+
     </main>
   </div>
   <script src="site.js"></script>

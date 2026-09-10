@@ -109,6 +109,32 @@
       </div>
 
       <div class="card">
+        <h2>Slash command · <code>/liberty-status</code></h2>
+        <p>
+          Crea este slash command <strong>una sola vez</strong> antes de iniciar el workflow.
+          Después de que Bob termine la migración, lo usarás para verificar el estado de Liberty
+          en un solo paso, sin tener que dictar múltiples prompts.
+        </p>
+        <p>Ejecuta este prompt en Bob en modo <strong>Agent</strong>:</p>
+        <div class="prewrap"><pre>Crea el archivo .bob/commands/liberty-status.md con el siguiente contenido exacto:
+
+Lee el archivo gateway/src/main/liberty/config/server.xml y el Makefile para obtener
+los puertos HTTP y HTTPS configurados, el nombre del WAR y las credenciales del Admin Center.
+Luego verifica con curl que los siguientes endpoints estén respondiendo:
+- JOSSO Login
+- Server Status
+- Health Check
+- Admin Center de Liberty
+
+Presenta el resultado en una tabla con columnas: Servicio | URL | Usuario/Contraseña | Estado HTTP.
+Si algún endpoint no responde o las credenciales no funcionan, indícalo explícitamente en la tabla.</pre></div>
+        <div class="note">
+          Una vez creado, solo escribe <code>/liberty-status</code> en el chat de Bob después del workflow
+          y obtendrás la tabla completa de estado de la aplicación.
+        </div>
+      </div>
+
+      <div class="card">
         <h2>Workflow Bob · Liberty Replatforming</h2>
         <p>En Bob: <strong>Java Modernization</strong> → <strong>Liberty Replatforming</strong>.</p>
         <figure class="shot"><img src="assets/lab2/image27.png" alt="Liberty Replatforming en Bob" loading="lazy" /></figure>
@@ -126,9 +152,76 @@
       </div>
 
       <div class="card">
+        <h2>Qué modificó el workflow</h2>
+        <p>
+          Antes de verificar que Liberty levanta, conviene entender qué cambió Bob.
+          Estos son los archivos clave que el workflow modifica:
+        </p>
+        <table>
+          <thead><tr><th>Archivo</th><th>Qué configuró Bob</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>gateway/src/main/liberty/config/server.xml</code></td>
+              <td>Features de Liberty, puertos HTTP/HTTPS, configuración de la aplicación WAR y credenciales del Admin Center</td>
+            </tr>
+            <tr>
+              <td><code>Containerfile</code></td>
+              <td>Imagen base Liberty, rutas de copia del WAR y librerías al contenedor</td>
+            </tr>
+            <tr>
+              <td><code>Makefile</code></td>
+              <td>Variables de puertos (<code>LIBERTY_HTTP</code>, <code>LIBERTY_HTTPS</code>), target <code>liberty-setup</code> con el comando <code>podman run</code></td>
+            </tr>
+            <tr>
+              <td><code>gateway/web/target/*.war</code></td>
+              <td>WAR compilado listo para desplegar: <code>josso-gateway-web-1.8.12-SNAPSHOT.war</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="note">
+          Si el workflow terminó sin errores pero Liberty no arranca, el problema suele estar en
+          <code>server.xml</code> (features incorrectas) o en el <code>Makefile</code> (puertos ocupados).
+          Ve a la sección <strong>Prompts de recuperación</strong> más abajo.
+        </div>
+      </div>
+
+      <div class="card">
         <h2>Prompt post-migración · Verificar estado final</h2>
-        <p>Cuando el workflow termine, ejecuta este prompt en Bob para confirmar que la aplicación está desplegada y accesible:</p>
+        <p>Cuando el workflow termine, ejecuta este prompt — o usa el slash command <code>/liberty-status</code> si ya lo creaste:</p>
         <div class="prewrap"><pre>Obtén las credenciales del Admin Center. Dime en qué puertos está configurado Liberty, el nombre del WAR, y verifica con curl que estos endpoints estén respondiendo: login de JOSSO, server status, health check y Admin Center de Liberty. El Admin Center debe estar levantado y ser accesible con sus credenciales antes de incluirlo en la tabla. Presenta el resultado en una tabla: servicio | URL | usuario/contraseña | estado HTTP. Si alguno no responde o las credenciales no funcionan, indícalo explícitamente.</pre></div>
+      </div>
+
+      <div class="card">
+        <h2>Prompts de recuperación ante errores</h2>
+        <p>
+          Estos son los tres errores más frecuentes después del workflow. Copia el prompt correspondiente
+          directamente en Bob — no necesitas diagnosticar nada tú mismo.
+        </p>
+
+        <h3>Liberty no levanta · sin logs o contenedor que no arranca</h3>
+        <div class="prewrap"><pre>El servidor Liberty no está arrancando. Revisa si hay algún contenedor de Podman corriendo
+o detenido con el nombre josso. Muéstrame los logs del contenedor si existe.
+Si no existe, revisa el Makefile y dime exactamente qué comando podman run se ejecutaría
+con las variables actuales. Identifica qué puede estar fallando antes de intentar levantarlo de nuevo.</pre></div>
+
+        <h3>Error de autenticación · credenciales no funcionan</h3>
+        <div class="prewrap"><pre>Las credenciales del Admin Center de Liberty no están funcionando.
+Lee el server.xml y dime exactamente qué usuario y contraseña están configurados
+en el elemento quickStartSecurity. Si usan variables, búscalas en bootstrap.properties
+o en el Makefile. Dame las credenciales exactas que debo usar.</pre></div>
+
+        <h3>Endpoints no responden · curl falla con conexión rechazada</h3>
+        <div class="prewrap"><pre>Los endpoints de JOSSO no responden. Verifica:
+1. Si el contenedor de Podman está corriendo: podman ps
+2. En qué puerto quedó mapeado: podman port josso (o el nombre del contenedor)
+3. Si el WAR está desplegado: busca en los logs "CWWKZ0001I" que indica app iniciada
+4. El context-root configurado en server.xml
+Dame un diagnóstico de qué está pasando y el comando curl correcto para probar cada endpoint.</pre></div>
+
+        <div class="note">
+          Si ninguno de estos prompts resuelve el problema, reinicia desde cero con el prompt
+          de liberar puertos de la sección anterior y vuelve a ejecutar <code>make liberty-setup</code>.
+        </div>
       </div>
 
       <!-- ================= ANEXOS ================= -->
