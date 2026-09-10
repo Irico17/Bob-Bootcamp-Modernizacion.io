@@ -91,6 +91,25 @@
       </div>
 
       <div class="card">
+        <h2>Levantar la app en WebLogic <span style="font-weight:400;font-size:0.85em;color:#57606a">(opcional)</span></h2>
+        <p>
+          Antes de migrar, puedes explorar JOSSO corriendo en WebLogic para ver cómo se ve
+          la aplicación original. Esto es opcional — si ya tienes WebLogic configurado con el proyecto clonado,
+          ejecuta este prompt en Bob en modo <strong>Agent</strong>:
+        </p>
+        <div class="prewrap"><pre>Quiero levantar la aplicación JOSSO Gateway en WebLogic para explorarla antes de migrar.
+Revisa el proyecto y dime:
+1. Qué comando o script debo ejecutar para compilar y desplegar el WAR en WebLogic
+2. Cómo verificar que WebLogic está corriendo (puerto 7001)
+3. Las URLs y credenciales para acceder a JOSSO Login, Server Status, Health Check y la consola de administración de WebLogic
+Una vez que todo esté levantado, confirma con curl que los endpoints responden y muéstrame la tabla de acceso.</pre></div>
+        <div class="note">
+          Este paso requiere tener WebLogic instalado y configurado localmente o en la VM del entorno de demo.
+          Si no tienes WebLogic disponible, pasa directamente al siguiente paso.
+        </div>
+      </div>
+
+      <div class="card">
         <h2>Migration plan y Bob</h2>
         <p><strong>View migration plan</strong> → descargar:</p>
         <figure class="shot"><img src="assets/lab2/image25.png" alt="View migration plan" loading="lazy" /></figure>
