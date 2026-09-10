@@ -59,6 +59,8 @@
       <div class="card">
         <h2>Exploración de la app inicial</h2>
         <div class="prewrap"><pre>git clone -b v4 https://github.com/Claudia-Fernanda-Rejas-Ruiz/JOSSO-weblogic-bob.git JOSSO-weblogic-bob-v4-FRESH</pre></div>
+
+        <h3>URLs WebLogic (origen)</h3>
         <table>
           <thead><tr><th>Servicio</th><th>URL</th><th>Usuario</th><th>Contraseña</th></tr></thead>
           <tbody>
@@ -85,6 +87,43 @@
               <td><code>https://localhost:9002/console/login/LoginForm.jsp</code></td>
               <td><code>weblogic</code></td>
               <td><code>welcome1</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>URLs Liberty (objetivo tras la migración)</h3>
+        <table>
+          <thead><tr><th>Servicio</th><th>URL</th><th>Usuario</th><th>Contraseña</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>JOSSO Login</td>
+              <td><code>http://localhost:9083/josso-gateway-web.war/signon/login.do</code></td>
+              <td><code>bob</code></td>
+              <td><code>bobpwd</code></td>
+            </tr>
+            <tr>
+              <td>Health Check</td>
+              <td><code>http://localhost:9083/josso-gateway-web.war/admin/health.jsp</code></td>
+              <td><code>bob</code></td>
+              <td><code>bobpwd</code></td>
+            </tr>
+            <tr>
+              <td>Server Status</td>
+              <td><code>http://localhost:9083/josso-gateway-web.war/admin/server-status.jsp</code></td>
+              <td><code>bob</code></td>
+              <td><code>bobpwd</code></td>
+            </tr>
+            <tr>
+              <td>Librerías cargadas</td>
+              <td><code>http://localhost:9083/josso-gateway-web.war/admin/libraries.jsp</code></td>
+              <td><code>bob</code></td>
+              <td><code>bobpwd</code></td>
+            </tr>
+            <tr>
+              <td>Admin Center (UI principal)</td>
+              <td><code>https://localhost:9444/adminCenter/</code></td>
+              <td><code>bob</code></td>
+              <td><code>bobpwd</code></td>
             </tr>
           </tbody>
         </table>
