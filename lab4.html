@@ -62,7 +62,7 @@
       <div class="card">
         <h2>2. Por qué esta app sí se puede “levantar”</h2>
         <p>
-          Se añadió una capa HTTP mínima (<code>com.claro.lab.api.App</code>) con el servidor embebido del JDK,
+          Se añadió una capa HTTP mínima (<code>com.bootcamp.lab.api.App</code>) con el servidor embebido del JDK,
           <strong>sin dependencias nuevas</strong>: puerto 8080 (<code>PORT</code>), <code>/health</code> y endpoints de negocio.
         </p>
         <table>
@@ -137,7 +137,7 @@ Explica brevemente cada decisión.</pre></div>
   capabilities drop ALL, seccompProfile RuntimeDefault.
 - resources: requests y limits de CPU y memoria razonables.
 - Variante para OpenShift: un Route que exponga el Service.
-Usa labels consistentes (app=claro-lab-api).</pre></div>
+Usa labels consistentes (app=lab-api).</pre></div>
 
         <h3>Prompt 4 (opcional) — Prueba local</h3>
         <div class="prewrap"><pre>Dame los comandos para construir la imagen y levantarla localmente con Podman
@@ -157,7 +157,7 @@ el contenedor al terminar.</pre></div>
           <li><code>securityContext</code>: runAsNonRoot, allowPrivilegeEscalation false, drop ALL, seccomp RuntimeDefault</li>
           <li>Requests/limits de CPU y memoria</li>
           <li>Sin secretos hardcodeados</li>
-          <li>Labels consistentes <code>app=claro-lab-api</code></li>
+          <li>Labels consistentes <code>app=lab-api</code></li>
           <li>(Opcional) build con <code>mvn verify</code> para exigir tests del Lab 3</li>
         </ul>
       </div>
@@ -165,19 +165,19 @@ el contenedor al terminar.</pre></div>
       <div class="card">
         <h2>7. Verificación local (opcional)</h2>
         <h3>7.1 Podman (preferible)</h3>
-        <div class="prewrap"><pre>podman build -t claro-lab-api:1.0 .
-podman run -d --name claro-api -p 8080:8080 claro-lab-api:1.0
+        <div class="prewrap"><pre>podman build -t lab-api:1.0 .
+podman run -d --name lab-api -p 8080:8080 lab-api:1.0
 curl http://localhost:8080/health
 curl "http://localhost:8080/fare?plan=CORPORATE&minutes=150&data=800&peak=true"
-podman logs claro-api
+podman logs lab-api
 podman ps
-podman stop claro-api && podman rm claro-api</pre></div>
+podman stop lab-api && podman rm lab-api</pre></div>
 
         <h3>7.2 Docker</h3>
-        <div class="prewrap"><pre>docker build -t claro-lab-api:1.0 .
-docker run -d --name claro-api -p 8080:8080 claro-lab-api:1.0
+        <div class="prewrap"><pre>docker build -t lab-api:1.0 .
+docker run -d --name lab-api -p 8080:8080 lab-api:1.0
 curl http://localhost:8080/health
-docker stop claro-api && docker rm claro-api</pre></div>
+docker stop lab-api && docker rm lab-api</pre></div>
 
         <h3>7.3 Manifiestos con Podman</h3>
         <div class="prewrap"><pre>podman kube play deployment.yaml
@@ -189,7 +189,7 @@ podman kube down deployment.yaml</pre></div>
         <h3>7.4 Cluster (opcional)</h3>
         <div class="prewrap"><pre>kubectl apply -f deployment.yaml -f service.yaml
 kubectl get pods -w
-kubectl port-forward svc/claro-lab-api 8080:80
+kubectl port-forward svc/lab-api 8080:80
 curl http://localhost:8080/health</pre></div>
       </div>
 
@@ -211,7 +211,7 @@ de modo que la imagen solo se genere si todos los unit tests pasan.</pre></div>
       <div class="card">
         <h2>10. Estructura relevante</h2>
         <div class="prewrap"><pre>pom.xml  → target/app.jar
-src/main/java/com/claro/lab/
+src/main/java/com/bootcamp/lab/
   api/App.java
   discount/InMemoryLoyaltyTierLookup.java
   pricing/… discount/… reservation/…
