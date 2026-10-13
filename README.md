@@ -27,7 +27,7 @@ Labs 3 y 4 = **mismo proyecto** → **un ZIP** (`lab3-4-java.zip`).
 
 ## Agenda (1:30 h, sin breaks)
 
-Setup 10 min · Lab 1 15 min · Lab 2 35 min · Lab 3 20 min · Lab 4 10 min (opcional).
+Setup 5 min · Lab 1 15 min · Lab 2 40 min · Lab 3 20 min · Lab 4 10 min (opcional).
 
 ## Desplegar
 

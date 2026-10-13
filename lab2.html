@@ -21,12 +21,13 @@
       <a href="index.html#descargas">Descargas</a>
     </aside>
     <main class="wrap lab-content">
-      <div class="eyebrow">LABORATORIO 2 · 35 min</div>
+      <div class="eyebrow">LABORATORIO 2 · 40 min</div>
       <h1>Migración WebLogic → Liberty</h1>
       <div class="meta">
         <span class="pill">WebLogic → Liberty</span>
         <span class="pill teal">Bob · Java Modernization</span>
         <span class="pill">JOSSO Gateway</span>
+        <span class="pill teal">Vulnerability Remediation</span>
       </div>
       <div class="actions">
         <a class="btn btn-primary" href="downloads/lab2-migracion.zip" download>Descargar guía Lab 2 (ZIP)</a>
@@ -310,6 +311,54 @@ Dame un diagnóstico de qué está pasando y el comando curl correcto para proba
           Si ninguno de estos prompts resuelve el problema, reinicia desde cero con el prompt
           de liberar puertos de la sección anterior y vuelve a ejecutar <code>make liberty-setup</code>.
         </div>
+      </div>
+
+      <div class="card" id="vulnerabilidades">
+        <h2>Workflow Bob · Java Vulnerability Remediation <span style="font-weight:400;font-size:0.85em;color:#57606a">(~5 min)</span></h2>
+        <p>
+          Con JOSSO ya corriendo en Liberty, el siguiente paso de la modernización es revisar la seguridad
+          de sus dependencias. Bob incluye el workflow <strong>Java Vulnerability Remediation</strong>
+          (parte del Premium Package for Java Modernization), que detecta librerías con CVEs conocidos
+          y puede corregirlas. JOSSO es un buen candidato: arrastra librerías antiguas
+          (por ejemplo Spring 2.5.5, CXF 2.2.2 y Axis).
+        </p>
+        <h3>Cómo funciona el workflow</h3>
+        <table>
+          <thead><tr><th>Etapa</th><th>Qué hace Bob</th></tr></thead>
+          <tbody>
+            <tr><td>1 · Detectar dependencias</td><td>Lee los <code>pom.xml</code> (Maven) o archivos Gradle del proyecto y extrae la lista completa de dependencias con sus versiones.</td></tr>
+            <tr><td>2 · Consultar OSV</td><td>Envía todas las dependencias en una sola petición batch a <a href="https://osv.dev" target="_blank" rel="noreferrer">OSV.dev</a> y obtiene el detalle de cada CVE (severidad, versiones afectadas, resumen).</td></tr>
+            <tr><td>3 · Mostrar resultados</td><td>Presenta en el chat una lista estructurada de vulnerabilidades con su puntaje <strong>CVSS</strong>.</td></tr>
+            <tr><td>4 · Corrección (opcional)</td><td>Lanza una subtarea de Bob que actualiza o reemplaza los paquetes vulnerables y verifica que el build siga pasando.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Ejecutarlo</h3>
+        <ol>
+          <li>Con la carpeta de JOSSO abierta en Bob, haz clic en <strong>Start Workflow</strong> (o escribe <code>Java Vulnerability Remediation</code> en el chat de Bob).</li>
+          <li>Selecciona <strong>Java Vulnerability Remediation</strong>.</li>
+          <li>Revisa la lista de CVEs con su CVSS y decide si aceptas el paso de corrección. Autoriza con Accept mientras Bob continúa.</li>
+        </ol>
+        <div class="note">
+          El workflow necesita un proyecto con <code>pom.xml</code> o Gradle: usa la raíz de JOSSO, que es el
+          <code>pom.xml</code> padre multi-módulo. Los resultados dependen de la cobertura de OSV.dev.
+        </div>
+
+        <h3>Prompt post-remediación · Verificar que sigue funcionando</h3>
+        <p>
+          Actualizar dependencias puede romper el build o el despliegue. Cuando el workflow termine,
+          verifica que JOSSO sigue en pie en Liberty (o usa <code>/liberty-status</code>):
+        </p>
+        <div class="prewrap"><pre>Acabamos de ejecutar el workflow Java Vulnerability Remediation sobre JOSSO.
+1. Resúmeme en una tabla qué dependencias se actualizaron o reemplazaron: Librería | Versión anterior | Versión nueva | CVE resuelto.
+2. Lista las vulnerabilidades que quedaron sin resolver y por qué.
+3. Recompila el proyecto y vuelve a desplegar en Liberty, y verifica con curl que el login de JOSSO, server status y health check siguen respondiendo.
+Si algo se rompió por una actualización, indícame qué cambio lo causó.</pre></div>
+        <div class="note">
+          Si el tiempo se acaba, basta con ejecutar hasta la etapa 3 y revisar la lista de CVEs;
+          la corrección automática es opcional.
+        </div>
+        <p>Referencia: <a href="https://github.com/IBM/ibm-bob-java" target="_blank" rel="noreferrer">IBM Bob Premium Package for Java Modernization</a></p>
       </div>
 
       <!-- ================= ANEXOS ================= -->
