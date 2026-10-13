@@ -56,7 +56,7 @@
           <tbody>
             <tr>
               <td><strong>Custom Mode</strong></td>
-              <td>Crear un modo <code>java-documenter</code> de solo lectura con rol de arquitecto técnico</td>
+              <td>Crear un modo <code>java-documenter</code> sin acceso a terminal, con rol de arquitecto técnico</td>
             </tr>
             <tr>
               <td><strong>Skill</strong></td>
@@ -78,6 +78,23 @@
         </table>
       </div>
 
+      <div class="card">
+        <h2>Flujo del lab · 15 min</h2>
+        <table>
+          <thead><tr><th>Paso</th><th>Modo de Bob</th><th>Tiempo</th><th>Resultado</th></tr></thead>
+          <tbody>
+            <tr><td>0 · Configurar el asistente</td><td>Agent</td><td>5 min</td><td>Custom Mode, Skill, Slash Command y reglas creados en <code>.bob/</code></td></tr>
+            <tr><td>1 · Explorar</td><td>Ask</td><td>2 min</td><td>Entiendes JOSSO sin tocar nada</td></tr>
+            <tr><td>2 · Planear</td><td>Plan</td><td>3 min</td><td>Índice justificado de la documentación</td></tr>
+            <tr><td>3 · Generar</td><td>📄 Java Documenter</td><td>5 min</td><td><code>DOCUMENTACION.md</code> + HTML artifact</td></tr>
+          </tbody>
+        </table>
+        <div class="note">
+          Si vas justo de tiempo, en el Paso 0 crea al menos A, B y C (la regla D es la más prescindible).
+          El <a href="#bonus-init">bonus de <code>/init</code></a> es opcional y no cuenta en los 15 min.
+        </div>
+      </div>
+
       <!-- ===== PASO 0 ===== -->
       <div class="card">
         <h2>Paso 0 · Configurar el asistente <span style="font-weight:400;font-size:0.85em;color:#57606a">(5 min)</span></h2>
@@ -90,8 +107,8 @@
         <h3>A · Custom Mode — <code>java-documenter</code></h3>
         <p>
           Un <strong>Custom Mode</strong> define el rol, los permisos y las instrucciones base de Bob
-          para una tarea específica. Este modo tendrá permisos de solo lectura — Bob no podrá modificar
-          ningún archivo del proyecto accidentalmente.
+          para una tarea específica. Este modo solo puede leer, escribir documentación y usar skills:
+          no tiene acceso a la terminal, así que Bob no puede ejecutar comandos ni compilar por accidente.
         </p>
         <p><strong>Prompt:</strong></p>
         <div class="prewrap"><pre>Crea el archivo .bob/custom_modes.yaml con el siguiente contenido exacto:
@@ -114,7 +131,7 @@ customModes:
       - skill</pre></div>
         <div class="note">
           El grupo <code>read</code> permite leer archivos. El grupo <code>edit</code> permite escribir
-          archivos nuevos como <code>DOCUMENTACION.md</code>. El grupo <code>skill</code> permite activar
+          archivos como <code>DOCUMENTACION.md</code> (las instrucciones del modo le piden no tocar el código fuente). El grupo <code>skill</code> permite activar
           los skills definidos en <code>.bob/skills/</code>. No se incluye <code>command</code> para
           que Bob no pueda ejecutar comandos de terminal.
         </div>
@@ -249,8 +266,8 @@ cada una es relevante para este proyecto específico.</pre></div>
           Aparecerá en el selector de modo junto a Ask, Plan y Agent.
         </p>
         <p>
-          Verás que Bob adopta el rol de arquitecto documentador y solo tiene permisos de lectura
-          más acceso a skills. Ahora escribe en el chat:
+          Verás que Bob adopta el rol de arquitecto documentador: lee el proyecto, escribe la documentación
+          y usa skills, pero no ejecuta comandos de terminal. Ahora escribe en el chat:
         </p>
         <div class="prewrap"><pre>/doc-java</pre></div>
         <p>
@@ -297,11 +314,47 @@ cada una es relevante para este proyecto específico.</pre></div>
               <td>Documentación técnica completa de JOSSO Gateway generada por Bob (incluye las dependencias de WebLogic que atenderás en el Lab 2)</td>
             </tr>
             <tr>
+              <td><code>AGENTS.md</code> <em>(bonus opcional)</em></td>
+              <td>Contexto permanente del proyecto que Bob lee en cada conversación, generado con <code>/init</code></td>
+            </tr>
+            <tr>
               <td>HTML artifact en el chat</td>
               <td>Página estática lista para abrir en el browser y compartir sin instalar nada</td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- ===== BONUS ===== -->
+      <div class="card" id="bonus-init">
+        <h2>Bonus · <code>/init</code> y <code>AGENTS.md</code> <span style="font-weight:400;font-size:0.85em;color:#57606a">(opcional · ~2 min)</span></h2>
+        <p>
+          Solo si te sobra tiempo. <code>/init</code> es un comando integrado de Bob que escanea el proyecto y genera
+          un <strong>AGENTS.md</strong>: un resumen de estructura, convenciones y objetivos que Bob lee al inicio de
+          <em>cada</em> conversación. Sin él, Bob es stateless y tiene que redescubrir el proyecto cada vez.
+        </p>
+        <p><strong>Cómo usarlo:</strong> con la carpeta raíz <code>JOSSO-weblogic-bob-4</code> abierta, en modo <strong>Agent</strong> escribe:</p>
+        <div class="prewrap"><pre>/init</pre></div>
+        <p>
+          Si el auto-approve está desactivado, Bob pide permiso para leer archivos y escribir. Al terminar verás un
+          <code>AGENTS.md</code> en la raíz y, dentro de <code>.bob/</code>, un archivo de reglas por cada modo integrado.
+        </p>
+        <table>
+          <thead><tr><th>Herramienta</th><th>Para qué sirve</th><th>Cuándo</th></tr></thead>
+          <tbody>
+            <tr><td><code>/init</code> → <code>AGENTS.md</code></td><td>Que Bob <strong>conozca el proyecto</strong></td><td>Una vez, y de nuevo tras cambios grandes</td></tr>
+            <tr><td>Skill</td><td>Instrucciones de <strong>cómo hacer</strong> un tipo de tarea, reutilizables entre proyectos</td><td>Cuando Bob detecta que aplica, o a mano</td></tr>
+            <tr><td>Slash command</td><td>Atajo que dispara un <strong>flujo del equipo</strong></td><td>Cuando lo escribes</td></tr>
+          </tbody>
+        </table>
+        <div class="note">
+          Abre siempre la carpeta raíz del proyecto: si abres una subcarpeta, Bob ve solo un fragmento y puede generar
+          un <code>AGENTS.md</code> escaso. Revisa el resultado y edítalo si hace falta. Vuelve a ejecutar <code>/init</code>
+          si cambias la estructura del proyecto.
+        </div>
+        <p>
+          Referencia: <a href="https://bob.ibm.com/docs/ide/getting-started/tutorials/start-a-project" target="_blank" rel="noreferrer">Start a project with /init and AGENTS.md</a>
+        </p>
       </div>
 
     </main>
