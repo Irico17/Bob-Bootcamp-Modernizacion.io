@@ -28,7 +28,7 @@
         <span class="pill teal">Ask · Plan · Agent</span>
       </div>
       <div class="actions">
-        <a class="btn btn-primary" href="downloads/lab1-documentacion.zip" download>Descargar proyecto Lab 1</a>
+        <a class="btn btn-primary" href="downloads/lab2-migracion.zip" download>Descargar proyecto (ZIP del Lab 2)</a>
       </div>
 
       <!-- ===== ALCANCE ===== -->
@@ -41,9 +41,16 @@
           desde cero usando Skills, Custom Modes, Slash Commands y el flujo de modos Ask → Plan → Agent.
         </p>
         <p>
-          El proyecto a documentar es <strong>employee-management</strong>: una API REST en
-          Java 8 + Spring Boot 2 con MySQL que gestiona empleados, departamentos y roles.
+          El proyecto a documentar es <strong>JOSSO Gateway</strong>: un servidor de Single Sign-On
+          (Java 8, Maven multi-módulo, Struts + Axis + JSP) pensado para WebLogic, el mismo
+          que migrarás a Liberty en el <a href="lab2.html">Lab 2</a>.
+          Documentarlo primero te da el mapa del proyecto antes de modernizarlo.
         </p>
+        <div class="note">
+          <strong>Mismo ZIP que el Lab 2:</strong> descarga <code>lab2-migracion.zip</code>, descomprímelo y
+          luego descomprime <code>JOSSO-weblogic-bob-4.zip</code>. La carpeta <code>JOSSO-weblogic-bob-4</code>
+          es el proyecto que abrirás en Bob.
+        </div>
         <table>
           <thead><tr><th>Feature de Bob Premium</th><th>Para qué la usarás en este lab</th></tr></thead>
           <tbody>
@@ -75,7 +82,7 @@
       <div class="card">
         <h2>Paso 0 · Configurar el asistente <span style="font-weight:400;font-size:0.85em;color:#57606a">(5 min)</span></h2>
         <p>
-          Abre la carpeta del proyecto <strong>employee-management</strong> en Bob.
+          Abre la carpeta del proyecto <strong>JOSSO-weblogic-bob-4</strong> en Bob.
           Ejecuta cada uno de los siguientes prompts en modo <strong>Agent</strong> para crear
           los archivos de configuración de Bob dentro del proyecto.
         </p>
@@ -99,8 +106,8 @@ customModes:
       completa y en español. Nunca modificas archivos de código fuente.
     whenToUse: Úsalo cuando necesites documentar un proyecto Java existente.
     customInstructions: >-
-      Documenta siempre en español. Incluye tabla de endpoints REST con método, URL y descripción.
-      Cita versiones exactas desde pom.xml. Organiza la documentación por capas: modelo, servicio, controlador.
+      Documenta siempre en español. Incluye tabla de puntos de entrada web (URL, servlet o acción, descripción).
+      Cita versiones exactas desde los pom.xml. Organiza la documentación por módulos: shared, gateway, agent.
     groups:
       - read
       - edit
@@ -134,19 +141,20 @@ Cuando se active este skill, analiza el proyecto Java abierto y genera documenta
 ## Qué debes documentar
 
 1. **Descripción general** — propósito de la aplicación y problema que resuelve
-2. **Stack tecnológico** — versiones exactas desde pom.xml (Java, Spring Boot, dependencias clave)
-3. **Arquitectura** — estructura del repositorio y responsabilidad de cada capa (modelo, repositorio, servicio, controlador)
-4. **Modelos de datos** — entidades JPA, campos relevantes y relaciones entre ellas
-5. **Endpoints REST** — tabla con método HTTP, URL, descripción y parámetros esperados
-6. **Configuración** — propiedades requeridas en application.properties o application.yml
-7. **Cómo ejecutar** — pasos para correr la aplicación localmente
-8. **Observaciones** — posibles mejoras, deuda técnica o puntos de atención
+2. **Stack tecnológico** — versiones exactas desde los pom.xml (Java, Spring, Struts, Axis/CXF, dependencias clave)
+3. **Arquitectura** — estructura multi-módulo del repositorio (shared, gateway, agent) y responsabilidad de cada módulo
+4. **Componentes clave** — autenticador, gestor de sesiones, identity store, auditoría y cómo se conectan entre sí
+5. **Puntos de entrada web** — tabla con URL, servlet o acción (web.xml, struts-*.xml), JSPs de administración y servicios SOAP
+6. **Configuración** — archivos como josso-gateway-config.xml, josso-users.xml, josso-credentials.xml y web.xml
+7. **Cómo construir y ejecutar** — perfiles de Maven, Makefile y archivos de docker/ para correr la aplicación
+8. **Dependencias de plataforma** — código o configuración que asume WebLogic (relevante para migrar a Liberty)
+9. **Observaciones** — posibles mejoras, deuda técnica o puntos de atención
 
 ## Formato de salida
 
 - Escribe en español
 - Usa headers Markdown (##, ###)
-- Usa tablas para endpoints y modelos de datos
+- Usa tablas para puntos de entrada web y componentes
 - Sé preciso: cita nombres de clases, métodos y archivos reales del proyecto</pre></div>
 
         <h3>C · Slash Command — <code>/doc-java</code></h3>
@@ -178,13 +186,13 @@ Haz dos cosas con el resultado:
 # Estándares de documentación Java
 
 - Toda la documentación debe estar escrita en **español**
-- Los endpoints REST siempre deben presentarse en tabla con columnas: Método | URL | Descripción
+- Los puntos de entrada web siempre deben presentarse en tabla con columnas: URL | Servlet/Acción | Descripción
 - Las versiones del stack deben extraerse del pom.xml, nunca suponer versiones
 - Si no encuentras información suficiente para una sección, indícalo explícitamente
 - No generes código nuevo ni modifiques archivos del proyecto</pre></div>
 
         <div class="note">
-          Al terminar el Paso 0 tendrás esta estructura dentro del proyecto <strong>employee-management</strong>:<br/><br/>
+          Al terminar el Paso 0 tendrás esta estructura dentro del proyecto <strong>JOSSO-weblogic-bob-4</strong>:<br/><br/>
           <code>.bob/custom_modes.yaml</code> — define el modo java-documenter<br/>
           <code>.bob/skills/java-doc-expert/SKILL.md</code> — instrucciones de documentación<br/>
           <code>.bob/commands/doc-java.md</code> — slash command /doc-java<br/>
@@ -194,9 +202,9 @@ Haz dos cosas con el resultado:
 
       <!-- ===== PASO 1 ===== -->
       <div class="card">
-        <h2>Paso 1 · Explorar el proyecto <span style="font-weight:400;font-size:0.85em;color:#57606a">Ask mode · 5 min</span></h2>
+        <h2>Paso 1 · Explorar el proyecto <span style="font-weight:400;font-size:0.85em;color:#57606a">Ask mode · 2 min</span></h2>
         <p>
-          Con el proyecto <strong>employee-management</strong> abierto en Bob, cambia al modo
+          Con el proyecto <strong>JOSSO Gateway</strong> abierto en Bob, cambia al modo
           <strong>Ask</strong> haciendo clic en el selector de modo a la izquierda del campo de chat
           y seleccionando <strong>Ask</strong>, o escribe <code>/ask</code> en el chat.
         </p>
@@ -206,23 +214,23 @@ Haz dos cosas con el resultado:
         </p>
         <p><strong>Prompt:</strong></p>
         <div class="prewrap"><pre>Explícame qué hace esta aplicación, qué problema resuelve y cómo está estructurada.
-Identifica las capas principales, las entidades del dominio y los endpoints REST disponibles.</pre></div>
+Identifica los módulos principales (shared, gateway, agent), los componentes clave del SSO y los puntos de entrada web disponibles.</pre></div>
         <p>
-          Observa cómo Bob navega por los archivos (<code>pom.xml</code>, entidades, controladores,
-          <code>application.properties</code>) sin proponer ningún cambio. Ese es el comportamiento
+          Observa cómo Bob navega por los archivos (<code>pom.xml</code>, <code>web.xml</code>, módulos de <code>shared</code> y <code>gateway</code>,
+          <code>Makefile</code>) sin proponer ningún cambio. Ese es el comportamiento
           correcto de Ask mode.
         </p>
       </div>
 
       <!-- ===== PASO 2 ===== -->
       <div class="card">
-        <h2>Paso 2 · Planear la documentación <span style="font-weight:400;font-size:0.85em;color:#57606a">Plan mode · 5 min</span></h2>
+        <h2>Paso 2 · Planear la documentación <span style="font-weight:400;font-size:0.85em;color:#57606a">Plan mode · 3 min</span></h2>
         <p>
           Cambia al modo <strong>Plan</strong> desde el selector de modo o escribe <code>/plan</code>
           en el chat. En Plan mode Bob propone estructuras y organiza el trabajo — tampoco escribe archivos todavía.
         </p>
         <p><strong>Prompt:</strong></p>
-        <div class="prewrap"><pre>Basándote en lo que analizaste del proyecto employee-management, diseña la estructura
+        <div class="prewrap"><pre>Basándote en lo que analizaste del proyecto JOSSO Gateway, diseña la estructura
 de la documentación técnica que generaremos.
 Propón las secciones que debe tener el archivo DOCUMENTACION.md, en qué orden y por qué
 cada una es relevante para este proyecto específico.</pre></div>
@@ -235,7 +243,7 @@ cada una es relevante para este proyecto específico.</pre></div>
 
       <!-- ===== PASO 3 ===== -->
       <div class="card">
-        <h2>Paso 3 · Generar la documentación <span style="font-weight:400;font-size:0.85em;color:#57606a">java-documenter mode · 10 min</span></h2>
+        <h2>Paso 3 · Generar la documentación <span style="font-weight:400;font-size:0.85em;color:#57606a">java-documenter mode · 5 min</span></h2>
         <p>
           Cambia al modo <strong>📄 Java Documenter</strong> que creaste en el Paso 0.
           Aparecerá en el selector de modo junto a Ask, Plan y Agent.
@@ -248,7 +256,7 @@ cada una es relevante para este proyecto específico.</pre></div>
         <p>
           Bob activará el skill <code>java-doc-expert</code>, aplicará los estándares del modo
           y generará el archivo <code>DOCUMENTACION.md</code> en la raíz del proyecto con la documentación
-          técnica completa del sistema <strong>employee-management</strong>.
+          técnica completa del sistema <strong>JOSSO Gateway</strong>.
         </p>
         <div class="note">
           Si Bob solicita confirmación para activar el skill, haz clic en <strong>Aprobar</strong>.
@@ -256,8 +264,9 @@ cada una es relevante para este proyecto específico.</pre></div>
         </div>
         <p>
           Una vez generado el archivo, ábrelo y verifica que incluya las secciones definidas en el skill:
-          stack tecnológico, arquitectura por capas, modelos de datos (Employee, Department, Role),
-          tabla de endpoints REST y pasos para ejecutar la aplicación localmente.
+          stack tecnológico, arquitectura multi-módulo (shared, gateway, agent), componentes clave,
+          tabla de puntos de entrada web (<code>*.do</code>, <code>/services/*</code>, páginas de <code>admin/</code>),
+          dependencias de WebLogic y pasos para construir y ejecutar la aplicación.
         </p>
       </div>
 
@@ -285,7 +294,7 @@ cada una es relevante para este proyecto específico.</pre></div>
             </tr>
             <tr>
               <td><code>DOCUMENTACION.md</code></td>
-              <td>Documentación técnica completa del sistema employee-management generada por Bob</td>
+              <td>Documentación técnica completa de JOSSO Gateway generada por Bob (incluye las dependencias de WebLogic que atenderás en el Lab 2)</td>
             </tr>
             <tr>
               <td>HTML artifact en el chat</td>
