@@ -416,3 +416,4 @@ dialog.lightbox button:hover { background: var(--layer-2); }
   body { background: #fff; color: #000; }
   .prewrap { border-color: #999; }
 }
+.nowrap { white-space: nowrap; }
