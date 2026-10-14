@@ -4,22 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lab 1 · Documentación · IBM Bob Bootcamp</title>
+  <script>
+    (function () {
+      var p = "system";
+      try { p = localStorage.getItem("bob-theme") || "system"; } catch (e) {}
+      var dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = p === "system" ? (dark ? "dark" : "light") : p;
+    })();
+  </script>
+  <meta name="color-scheme" content="light dark" />
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="site.js" defer></script>
 </head>
 <body>
   <div class="layout">
     <aside class="sidenav">
-      <div class="brand">IBM Bob · Bootcamp</div>
-      <a href="index.html">Inicio</a>
-      <a class="active" href="lab1.html">Lab 1 · Documentación</a>
-      <a href="lab2.html">Lab 2 · Migración</a>
-      <a href="lab3.html">Lab 3 · Unit Testing</a>
-      <a href="lab4.html">Lab 4 · Contenerización</a>
-      <a href="index.html#descargas">Descargas</a>
+      <a class="brand" href="index.html">IBM Bob<span>Bootcamp · Modernización</span></a>
+      <nav aria-label="Principal">
+        <a href="index.html">Inicio</a>
+        <a class="active" href="lab1.html">Lab 1 · Documentación</a>
+        <a href="lab2.html">Lab 2 · Migración</a>
+        <a href="lab3.html">Lab 3 · Unit Testing</a>
+        <a href="lab4.html">Lab 4 · Contenerización</a>
+        <a href="index.html#descargas">Descargas</a>
+      </nav>
     </aside>
     <main class="wrap lab-content">
-      <div class="eyebrow">LABORATORIO 1 · ~15 min</div>
+      <div class="eyebrow">Laboratorio 1 · ~15 min</div>
       <h1>Documentación inteligente con Bob Premium</h1>
       <div class="meta">
         <span class="pill">Skills</span>
@@ -97,7 +111,7 @@
 
       <!-- ===== PASO 0 ===== -->
       <div class="card">
-        <h2>Paso 0 · Configurar el asistente <span style="font-weight:400;font-size:0.85em;color:#57606a">(5 min)</span></h2>
+        <h2>Paso 0 · Configurar el asistente <span class="t-hint">(5 min)</span></h2>
         <p>
           Abre la carpeta del proyecto <strong>JOSSO-weblogic-bob-4</strong> en Bob.
           Ejecuta cada uno de los siguientes prompts en modo <strong>Agent</strong> para crear
@@ -219,7 +233,7 @@ Haz dos cosas con el resultado:
 
       <!-- ===== PASO 1 ===== -->
       <div class="card">
-        <h2>Paso 1 · Explorar el proyecto <span style="font-weight:400;font-size:0.85em;color:#57606a">Ask mode · 2 min</span></h2>
+        <h2>Paso 1 · Explorar el proyecto <span class="t-hint">Ask mode · 2 min</span></h2>
         <p>
           Con el proyecto <strong>JOSSO Gateway</strong> abierto en Bob, cambia al modo
           <strong>Ask</strong> haciendo clic en el selector de modo a la izquierda del campo de chat
@@ -241,7 +255,7 @@ Identifica los módulos principales (shared, gateway, agent), los componentes cl
 
       <!-- ===== PASO 2 ===== -->
       <div class="card">
-        <h2>Paso 2 · Planear la documentación <span style="font-weight:400;font-size:0.85em;color:#57606a">Plan mode · 3 min</span></h2>
+        <h2>Paso 2 · Planear la documentación <span class="t-hint">Plan mode · 3 min</span></h2>
         <p>
           Cambia al modo <strong>Plan</strong> desde el selector de modo o escribe <code>/plan</code>
           en el chat. En Plan mode Bob propone estructuras y organiza el trabajo — tampoco escribe archivos todavía.
@@ -260,7 +274,7 @@ cada una es relevante para este proyecto específico.</pre></div>
 
       <!-- ===== PASO 3 ===== -->
       <div class="card">
-        <h2>Paso 3 · Generar la documentación <span style="font-weight:400;font-size:0.85em;color:#57606a">java-documenter mode · 5 min</span></h2>
+        <h2>Paso 3 · Generar la documentación <span class="t-hint">java-documenter mode · 5 min</span></h2>
         <p>
           Cambia al modo <strong>📄 Java Documenter</strong> que creaste en el Paso 0.
           Aparecerá en el selector de modo junto a Ask, Plan y Agent.
@@ -327,7 +341,7 @@ cada una es relevante para este proyecto específico.</pre></div>
 
       <!-- ===== BONUS ===== -->
       <div class="card" id="bonus-init">
-        <h2>Bonus · <code>/init</code> y <code>AGENTS.md</code> <span style="font-weight:400;font-size:0.85em;color:#57606a">(opcional · ~2 min)</span></h2>
+        <h2>Bonus · <code>/init</code> y <code>AGENTS.md</code> <span class="t-hint">(opcional · ~2 min)</span></h2>
         <p>
           Solo si te sobra tiempo. <code>/init</code> es un comando integrado de Bob que escanea el proyecto y genera
           un <strong>AGENTS.md</strong>: un resumen de estructura, convenciones y objetivos que Bob lee al inicio de
@@ -359,6 +373,5 @@ cada una es relevante para este proyecto específico.</pre></div>
 
     </main>
   </div>
-  <script src="site.js"></script>
 </body>
 </html>

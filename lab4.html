@@ -4,22 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lab 4 · Contenerización · IBM Bob Bootcamp</title>
+  <script>
+    (function () {
+      var p = "system";
+      try { p = localStorage.getItem("bob-theme") || "system"; } catch (e) {}
+      var dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = p === "system" ? (dark ? "dark" : "light") : p;
+    })();
+  </script>
+  <meta name="color-scheme" content="light dark" />
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="site.js" defer></script>
 </head>
 <body>
   <div class="layout">
     <aside class="sidenav">
-      <div class="brand">IBM Bob · Bootcamp</div>
-      <a href="index.html">Inicio</a>
-      <a href="lab1.html">Lab 1 · Documentación</a>
-      <a href="lab2.html">Lab 2 · Migración</a>
-      <a href="lab3.html">Lab 3 · Unit Testing</a>
-      <a class="active" href="lab4.html">Lab 4 · Contenerización</a>
-      <a href="index.html#descargas">Descargas</a>
+      <a class="brand" href="index.html">IBM Bob<span>Bootcamp · Modernización</span></a>
+      <nav aria-label="Principal">
+        <a href="index.html">Inicio</a>
+        <a href="lab1.html">Lab 1 · Documentación</a>
+        <a href="lab2.html">Lab 2 · Migración</a>
+        <a href="lab3.html">Lab 3 · Unit Testing</a>
+        <a class="active" href="lab4.html">Lab 4 · Contenerización</a>
+        <a href="index.html#descargas">Descargas</a>
+      </nav>
     </aside>
     <main class="wrap lab-content">
-      <div class="eyebrow">LABORATORIO 4 · 10 min · OPCIONAL</div>
+      <div class="eyebrow">Laboratorio 4 · 10 min · opcional</div>
       <h1>Contenerización con Bob (Kubernetes / OpenShift)</h1>
       <div class="meta">
         <span class="pill">Dockerfile</span>
@@ -219,6 +233,5 @@ src/main/java/com/bootcamp/lab/
       </div>
     </main>
   </div>
-  <script src="site.js"></script>
 </body>
 </html>

@@ -4,24 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lab 2 · Migración de Plataforma · IBM Bob Bootcamp</title>
+  <script>
+    (function () {
+      var p = "system";
+      try { p = localStorage.getItem("bob-theme") || "system"; } catch (e) {}
+      var dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = p === "system" ? (dark ? "dark" : "light") : p;
+    })();
+  </script>
+  <meta name="color-scheme" content="light dark" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="site.js" defer></script>
 </head>
 <body>
   <div class="layout">
     <aside class="sidenav">
-      <div class="brand">IBM Bob · Bootcamp</div>
-      <a href="index.html">Inicio</a>
-      <a href="lab1.html">Lab 1 · Documentación</a>
-      <a class="active" href="lab2.html">Lab 2 · Migración</a>
-      <a href="lab3.html">Lab 3 · Unit Testing</a>
-      <a href="lab4.html">Lab 4 · Contenerización</a>
-      <a href="index.html#descargas">Descargas</a>
+      <a class="brand" href="index.html">IBM Bob<span>Bootcamp · Modernización</span></a>
+      <nav aria-label="Principal">
+        <a href="index.html">Inicio</a>
+        <a href="lab1.html">Lab 1 · Documentación</a>
+        <a class="active" href="lab2.html">Lab 2 · Migración</a>
+        <a href="lab3.html">Lab 3 · Unit Testing</a>
+        <a href="lab4.html">Lab 4 · Contenerización</a>
+        <a href="index.html#descargas">Descargas</a>
+      </nav>
     </aside>
     <main class="wrap lab-content">
-      <div class="eyebrow">LABORATORIO 2 · 40 min</div>
+      <div class="eyebrow">Laboratorio 2 · 40 min</div>
       <h1>Migración WebLogic → Liberty</h1>
       <div class="meta">
         <span class="pill">WebLogic → Liberty</span>
@@ -132,7 +144,7 @@
       </div>
 
       <div class="card">
-        <h2>Levantar la app en WebLogic <span style="font-weight:400;font-size:0.85em;color:#57606a">(opcional)</span></h2>
+        <h2>Levantar la app en WebLogic <span class="t-hint">(opcional)</span></h2>
         <p>
           Antes de migrar, puedes explorar JOSSO corriendo en WebLogic para ver cómo se ve
           la aplicación original. Esto es opcional — si ya tienes WebLogic configurado con el proyecto clonado,
@@ -314,7 +326,7 @@ Dame un diagnóstico de qué está pasando y el comando curl correcto para proba
       </div>
 
       <div class="card" id="vulnerabilidades">
-        <h2>Workflow Bob · Java Vulnerability Remediation <span style="font-weight:400;font-size:0.85em;color:#57606a">(~5 min)</span></h2>
+        <h2>Workflow Bob · Java Vulnerability Remediation <span class="t-hint">(~5 min)</span></h2>
         <p>
           Con JOSSO ya corriendo en Liberty, el siguiente paso de la modernización es revisar la seguridad
           de sus dependencias. Bob incluye el workflow <strong>Java Vulnerability Remediation</strong>
@@ -364,7 +376,7 @@ Si algo se rompió por una actualización, indícame qué cambio lo causó.</pre
       <!-- ================= ANEXOS ================= -->
       <div class="card" id="anexos">
         <h2>Anexos</h2>
-        <p class="lede" style="margin-bottom:1rem">
+        <p class="lede">
           Detalle opcional: preparación del entorno y proceso de obtención del migration plan con AMA.
         </p>
 
@@ -423,7 +435,7 @@ Si algo se rompió por una actualización, indícame qué cambio lo causó.</pre
 
         <div class="note warn">
           <strong>Reiniciar el entorno (solo si es necesario):</strong>
-          <div class="prewrap" style="margin-top:.6rem"><pre>/home/techzone/demos/ManagedLiberty-MoRE/tx-more-lab/scripts/reset-lab-environment.sh</pre></div>
+          <div class="prewrap"><pre>/home/techzone/demos/ManagedLiberty-MoRE/tx-more-lab/scripts/reset-lab-environment.sh</pre></div>
         </div>
 
         <h4>Consola de administración de WebSphere</h4>
@@ -504,6 +516,5 @@ cd ~/Student_3/ama_discovery/ama-discovery-4.6.0
       </div>
     </main>
   </div>
-  <script src="site.js"></script>
 </body>
 </html>

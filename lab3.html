@@ -4,26 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lab 3 · Unit Testing · IBM Bob Bootcamp</title>
+  <script>
+    (function () {
+      var p = "system";
+      try { p = localStorage.getItem("bob-theme") || "system"; } catch (e) {}
+      var dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = p === "system" ? (dark ? "dark" : "light") : p;
+    })();
+  </script>
+  <meta name="color-scheme" content="light dark" />
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script type="module">
     import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
     mermaid.initialize({ startOnLoad: true, theme: "dark" });
   </script>
+  <script src="site.js" defer></script>
 </head>
 <body>
   <div class="layout">
     <aside class="sidenav">
-      <div class="brand">IBM Bob · Bootcamp</div>
-      <a href="index.html">Inicio</a>
-      <a href="lab1.html">Lab 1 · Documentación</a>
-      <a href="lab2.html">Lab 2 · Migración</a>
-      <a class="active" href="lab3.html">Lab 3 · Unit Testing</a>
-      <a href="lab4.html">Lab 4 · Contenerización</a>
-      <a href="index.html#descargas">Descargas</a>
+      <a class="brand" href="index.html">IBM Bob<span>Bootcamp · Modernización</span></a>
+      <nav aria-label="Principal">
+        <a href="index.html">Inicio</a>
+        <a href="lab1.html">Lab 1 · Documentación</a>
+        <a href="lab2.html">Lab 2 · Migración</a>
+        <a class="active" href="lab3.html">Lab 3 · Unit Testing</a>
+        <a href="lab4.html">Lab 4 · Contenerización</a>
+        <a href="index.html#descargas">Descargas</a>
+      </nav>
     </aside>
     <main class="wrap lab-content">
-      <div class="eyebrow">LABORATORIO 3 · 20 min</div>
+      <div class="eyebrow">Laboratorio 3 · 20 min</div>
       <h1>Bob Premium — Java Unit Testing</h1>
       <div class="meta">
         <span class="pill">Bob Premium</span>
@@ -258,6 +272,5 @@ src/test/java/                   # vacío en LaboratorioBasev1</pre></div>
       </div>
     </main>
   </div>
-  <script src="site.js"></script>
 </body>
 </html>
