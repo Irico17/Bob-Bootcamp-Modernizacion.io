@@ -9,7 +9,7 @@ bootcamp-web/
   styles.css
   assets/lab2/*.png   # capturas del DOCX Lab 2
   downloads/
-    lab2-migracion.zip      # JOSSO: Labs 1 y 2 (documentar, luego migrar)
+    lab1-2-migracion.zip      # JOSSO: Labs 1 y 2 (documentar, luego migrar)
     lab3-4-java.zip         # UN solo ZIP para Labs 3 y 4
   README.md
 ```
@@ -22,7 +22,7 @@ bootcamp-web/
 | Vite + React Router (como `bitbucket-lab-web`) | Si quieres Carbon Design System, SPA y más componentes. Más mantenimiento. |
 | Un solo `index.html` gigante | Peor con Lab 2 (27 imágenes). Evitar. |
 
-Labs 1 y 2 = **mismo proyecto (JOSSO)** → **un ZIP** (`lab2-migracion.zip`).
+Labs 1 y 2 = **mismo proyecto (JOSSO)** → **un ZIP** (`lab1-2-migracion.zip`).
 Labs 3 y 4 = **mismo proyecto** → **un ZIP** (`lab3-4-java.zip`).
 
 ## Agenda (1:30 h, sin breaks)
